@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.gecko.notary.model/src" modelPluginID="org.gecko.notary.model"
+    modelName="notary" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="11.0" suppressGenModelAnnotations="false"
+    copyrightFields="false" operationReflection="true" importOrganizing="true" oSGiCompatible="true">
+  <foreignModel>notary.ecore</foreignModel>
+  <genPackages prefix="Notary" basePackage="org.gecko.notary.model" resource="XMI"
+      disposableProviderFactory="true" contentTypeIdentifier="notary#1.0.0" ecorePackage="notary.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="notary.ecore#//ContactType">
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//ContactType/NOTIFICATION"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//ContactType/EMAIL"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//ContactType/APP"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//ContactType/MESSAGING"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="notary.ecore#//TransactionType">
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/OTHER"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/LOGISTICS_OUT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/LOGISTICS_IN"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/OPERATION_PREP"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/OPERATION_REPORT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/MEDICAL_REPORT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/GENESIS"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/PRODUCT_MODIFICATION"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/FEEDBACK"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/UDI_CHECK"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/PROBLEM"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/GAUGE"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/SELL_CONTRACT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/SERVICE_CONTRACT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/SUPPORT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//TransactionType/ASSET"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="notary.ecore#//AssetChangeType">
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/UNKNOWN"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/CREATION"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/MODIFICATION"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/DESTRUCTION"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/JOIN"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/SPLIT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//AssetChangeType/OWNERSHIP"/>
+    </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="notary.ecore#//DocumentationType">
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/UNKNOWN"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/URL"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/FAQ"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/MANUAL"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/MANUFACTURER_PAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/PRODUCT_PAGE"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/CUSTOMER_CARE"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/COMMUNITY_PAGE"/>
+    </genEnums>
+    <genClasses ecoreClass="notary.ecore#//Participant">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Participant/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Participant/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Participant/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//Participant/address"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//ParticipantDefinition">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ParticipantDefinition/id"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/contact"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/participant"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/transaction"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/asset"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/notification"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//ParticipantDefinition/notificationLog"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Address">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/street"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/floor"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/building"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/zip"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/city"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/country"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Address/state"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Contact">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Contact/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Contact/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Contact/type"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Transaction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Transaction/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Transaction/participantId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Transaction/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Transaction/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Transaction/share"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//TransactionNotification">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//TransactionNotification/contact"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionNotification/contactId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//TransactionNotification/transaction"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionNotification/transactionId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionNotification/content"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionNotification/id"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//TransactionEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/timestamp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/comment"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/assetId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/transactionId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/participantId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/precedingEntryId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//TransactionEntry/precedingEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TransactionEntry/source"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//AssetTransactionEntry">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//AssetTransactionEntry/asset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetTransactionEntry/changeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetTransactionEntry/parentAssetId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetTransactionEntry/changeData"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Asset">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//Asset/assetLog"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/inactive"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/creatorBehalf"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/creatorId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/ownerId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/ownerName"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//Asset/asset"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/assetIds"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Asset/transactionDesc"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//Asset/info"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//AssetLog">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetLog/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//AssetLog/entry"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//AssetLog/lastEntry"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetLog/assetId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//AssetLog/asset"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Notification">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/read"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/content"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/timestamp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/senderId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/receipientId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Notification/subject"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//NotificationLog">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//NotificationLog/id"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//NotificationLog/notification"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//ParentAssetEntry">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ParentAssetEntry/parentAssetLogId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ParentAssetEntry/parentAssetId"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//AssetTransaction">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetTransaction/changeType"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//AssetInfo">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetInfo/assetTypeLabel"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetInfo/label"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetInfo/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetInfo/assetIdentifier"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//AssetInfo/documentation"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//AssetInfo/transactionDesc"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//DocumentationReference">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/type"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/reference"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

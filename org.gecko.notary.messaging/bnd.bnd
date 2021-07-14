@@ -1,0 +1,16 @@
+-buildpath: \
+	osgi.annotation;version='7.0',\
+	osgi.cmpn;version='7.0',\
+	org.gecko.emf.repository.api;version=latest,\
+	org.gecko.osgi.messaging;version=latest,\
+	org.osgi.util.promise;version=latest,\
+	org.gecko.adapter.amqp;version=latest,\
+	org.eclipse.emf.ecore;version=latest,\
+	org.eclipse.emf.common;version=latest,\
+	org.gecko.notary.model;version=project 
+
+javac.source: 11
+javac.target: 11
+
+Bundle-Version: ${notaryVersion}
+Private-Package: org.gecko.notary.messaging

@@ -1,0 +1,5 @@
+
+-privatepackage: \
+	org.gecko.notary.service.event,\
+	org.gecko.notary.service.impl,\
+	org.gecko.notary.service.impl.textprovider

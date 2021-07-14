@@ -16,7 +16,7 @@
 
 -plugin.org.geckoprojects.notary: \
 	aQute.bnd.repository.maven.pom.provider.BndPomRepository;\
-		releaseUrl			= "https://repo.maven.apache.org/maven2/";\
+		releaseUrl			= "https://repo.maven.apache.org/maven2/,https://devel.data-in-motion.biz/nexus/repository/dim-release/";\
 		snapshotUrl			= "https://oss.sonatype.org/content/repositories/snapshots/";\
 		revision            = "${dependencies.project}";\
 		transitive          = false;\
@@ -26,3 +26,23 @@
 ##  All Project Deps
 dependencies.project:\
 	biz.aQute:biz.aQute.gogo.commands.provider:1.7.0
+	
+-maven-release: pom
+-pom: true
+-digest: sha256
+-groupid: org.geckoprojects.notary
+
+notaryVersion: 0.0.1-SNAPSHOT
+
+dependencies.project: \
+	org.bndtools:org.bndtools.templates.osgi:5.3.0,\
+	org.geckoprojects.repository:org.gecko.emf.repository.api:9.2.2,\
+	org.geckoprojects.repository:org.gecko.emf.repository.mongo:3.1.0,\
+	org.geckoprojects.mongo:org.gecko.emf.mongo.api:6.0.0,\
+	org.geckoprojects.mongo:org.gecko.emf.mongo.component:6.0.0,\
+	org.geckoprojects.mongo:org.gecko.mongo.osgi.api:6.0.0,\
+	org.geckoprojects.mongo:org.gecko.mongo.osgi.component:6.0.0,\
+	org.mongodb:mongo-java-driver:3.9.1,\
+	org.gecko.ma:org.gecko.osgi.messaging:3.1.0,\
+	org.gecko.ma:org.gecko.adapter.amqp:2.1.0
+	
