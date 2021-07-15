@@ -10,7 +10,7 @@ repositories {
 
 sonarqube {
   properties {
-    property "sonar.coverage.exclusions", "**/*.itest/**'"
+    property "sonar.coverage.exclusions", "**/org.gecko.notaryservice.itest/**"
     property "sonar.projectName", "org.geckoprojects.notary"
     property "sonar.projectKey", "geckoprojects-org_org.geckoprojects.notary"
     property "sonar.organization", "geckoprojects-org"
