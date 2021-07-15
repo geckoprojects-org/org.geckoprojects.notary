@@ -43,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
 public class AssetTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(AssetTextProvider.class.getName());
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	@Reference
 	private ParticipantService participantService;
 

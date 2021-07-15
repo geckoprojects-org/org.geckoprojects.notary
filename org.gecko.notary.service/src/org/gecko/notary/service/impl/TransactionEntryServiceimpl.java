@@ -189,9 +189,6 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 		}
 		AssetLog assetLog = repository.getEObject(NotaryPackage.Literals.ASSET_LOG, assetId);
 		AssetLog resolvedLog = resolveAssetLog(assetId, assetLog, assetType);
-		if (resolvedLog == null) {
-			throw new IllegalStateException(String.format("[%s] Cannot resolve AssetLog for asset id", assetId));
-		}
 		if (entry.getTimestamp() == null) {
 			entry.setTimestamp(new Date());
 		}

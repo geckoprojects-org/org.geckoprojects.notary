@@ -184,7 +184,9 @@ public class AssetServiceImpl implements AssetService {
 		}
 		IQuery assetQuery = queryRepository.createQueryBuilder().column(NotaryPackage.Literals.ASSET__ID).in(assetIds.toArray()).build();
 		List<Asset> assets = queryRepository.getEObjectsByQuery(NotaryPackage.Literals.ASSET, assetQuery, loadOptions);
-		assets.forEach(a->textProvider.provideText(a, null));
+		if (assets != null) {
+			assets.forEach(a->textProvider.provideText(a, null));
+		}
 		return assets == null ? Collections.emptyList() : assets;
 	}
 	

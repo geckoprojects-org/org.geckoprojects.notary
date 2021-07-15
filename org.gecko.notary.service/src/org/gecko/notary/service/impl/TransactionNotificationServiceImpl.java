@@ -76,7 +76,7 @@ public class TransactionNotificationServiceImpl extends BaseParticipantService i
 		}
 		if (notification.getContact() == null || 
 				(notification.getContact() != null && 
-				notification.getContact().getId() != contactId)) {
+				!contactId.equals(notification.getContact().getId()))) {
 			Optional<Contact> cOpt = definition.getContact().stream().filter(c->c.getId().equals(contactId)).findFirst();
 			if (cOpt.isPresent()) {
 				Contact c = cOpt.get();
@@ -87,7 +87,7 @@ public class TransactionNotificationServiceImpl extends BaseParticipantService i
 		}
 		if (notification.getTransaction() == null || 
 				(notification.getTransaction() != null && 
-				notification.getTransaction().getId() != transactionId)) {
+				!transactionId.equals(notification.getTransaction().getId()))) {
 			Optional<Transaction> tOpt = definition.getTransaction().stream().filter(t->t.getId().equals(transactionId)).findFirst();
 			if (tOpt.isPresent()) {
 				Transaction t = tOpt.get();
