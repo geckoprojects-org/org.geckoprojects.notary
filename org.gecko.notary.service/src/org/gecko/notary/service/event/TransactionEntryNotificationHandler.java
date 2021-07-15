@@ -48,7 +48,7 @@ public class TransactionEntryNotificationHandler implements EventHandler {
 	private TransactionService transactionService;
 	@Reference
 	private EventAdmin eventAdmin;
-
+	
 	/* 
 	 * (non-Javadoc)
 	 * @see org.osgi.service.event.EventHandler#handleEvent(org.osgi.service.event.Event)

@@ -24,6 +24,7 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface TextProvider {
 	
+	public static final String ASSET_LABEL_TEMPLATE = "Asset: '%s', Creator: %s, Owner: %s";
 	public static final String PRODUCT_LABEL_TEMPLATE = "Produkt: '%s', Typ: %s, Hersteller: %s";
 	public static final String PRODUCT_DESCRIPTION_TEMPLATE = "Artikelnummer: %s, Seriennummer: %s, Ersteller: ${CREATOR}, Besitzer: ${OWNER}";
 	public static final String TREATMENT_LABEL_TEMPLATE = "Behandlung: '%s', Versicherungsnummer: %s";

@@ -3,3 +3,6 @@
 	org.gecko.notary.service.event,\
 	org.gecko.notary.service.impl,\
 	org.gecko.notary.service.impl.textprovider
+Export-Package: \
+	org.gecko.notary.service.api,\
+	org.gecko.notary.service.api.textprovider

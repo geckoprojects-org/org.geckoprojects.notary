@@ -51,7 +51,7 @@ import org.osgi.service.event.EventAdmin;
 @Component(scope=ServiceScope.PROTOTYPE)
 public class AssetServiceImpl implements AssetService {
 
-	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary)")
+	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 
 	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED)

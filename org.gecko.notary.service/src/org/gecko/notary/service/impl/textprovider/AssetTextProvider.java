@@ -26,6 +26,7 @@ import org.eclipse.emf.ecore.EStructuralFeature;
 import org.gecko.notary.model.notary.Asset;
 import org.gecko.notary.model.notary.AssetInfo;
 import org.gecko.notary.model.notary.NotaryFactory;
+import org.gecko.notary.model.notary.NotaryPackage;
 import org.gecko.notary.model.notary.Participant;
 import org.gecko.notary.model.notary.TransactionEntry;
 import org.gecko.notary.service.api.ParticipantService;
@@ -108,6 +109,10 @@ public class AssetTextProvider implements TextProvider {
 //			features.add(DiamantPackage.Literals.TREATMENT__PATIENT_INSURANCE_ID);
 //			text = TREATMENT_LABEL_TEMPLATE;
 //		}
+		features.add(NotaryPackage.Literals.ASSET__ID);
+		features.add(NotaryPackage.Literals.ASSET__CREATOR_ID);
+		features.add(NotaryPackage.Literals.ASSET__OWNER_ID);
+		text = ASSET_LABEL_TEMPLATE;
 		return text == null ? null : getText(text, asset, features);
 	}
 
