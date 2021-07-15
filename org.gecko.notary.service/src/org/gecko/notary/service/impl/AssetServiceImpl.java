@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -253,12 +254,14 @@ public class AssetServiceImpl implements AssetService {
 			throw new IllegalStateException(String.format("[%s] Cannot update the owner that is null for the asset", assetId));
 		}
 		if (assetType == null) {
-			logger.warning(String.format("[%s] No asset type was given, taking ASSET as default", assetId));
+			logger.warning(()->String.format("[%s] No asset type was given, taking ASSET as default", assetId));
 			assetType = NotaryPackage.eINSTANCE.getAsset();
 		}
 		Asset asset = repository.getEObject(assetType, assetId, loadOptions);
 		if (asset == null) {
-			logger.info(String.format("[%s] No asset found for type '%s'", assetId, assetType.getName()));
+			if (logger.isLoggable(Level.FINE)) {
+				logger.fine(String.format("[%s] No asset found for type '%s'", assetId, assetType.getName()));
+			}
 			return null;
 		}
 		if (!participantId.equals(asset.getOwnerId())) {
