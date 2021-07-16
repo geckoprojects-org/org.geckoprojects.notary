@@ -54,7 +54,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 
 	private static final Logger logger = Logger.getLogger(TransactionEntryServiceimpl.class.getName());
 	private static final String ECLASS_URI = NotaryPackage.eNS_URI + "#//%s";
-	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=diamant.diamant)")
+	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 	@Reference(target = "(&(object=TransactionEntry)(target=TransactionEntry))")
 	private TextProvider transactionEntryTextProvider;

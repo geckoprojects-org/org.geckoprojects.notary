@@ -51,7 +51,7 @@ public class TransactionNotificationServiceImpl extends BaseParticipantService i
 	 * @see de.dim.diamant.service.impl.BaseParticipantService#setRepository(org.gecko.emf.repository.EMFRepository)
 	 */
 	@Override
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=diamant.diamant)")
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	protected void setRepository(EMFRepository repository) {
 		super.setRepository(repository);
 	}

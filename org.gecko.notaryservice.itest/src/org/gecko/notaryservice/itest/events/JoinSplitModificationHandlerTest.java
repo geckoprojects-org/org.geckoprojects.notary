@@ -69,7 +69,7 @@ public class JoinSplitModificationHandlerTest {
 		bc.registerService(TransactionEntryService.class, entryService, entryProperties);
 		Dictionary<String, Object> repoProperties = new Hashtable<String, Object>();
 		repoProperties.put(Constants.SERVICE_RANKING, 1000);
-		repoProperties.put("repo_id", "diamant.diamant");
+		repoProperties.put("repo_id", "notary.notary");
 		repoProperties.put(Constants.SERVICE_SCOPE, Constants.SCOPE_PROTOTYPE);
 		EMFRepository repository = mock(EMFRepository.class);
 		bc.registerService(EMFRepository.class, repository, repoProperties);

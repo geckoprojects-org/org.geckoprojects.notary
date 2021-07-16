@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 public class ParticipantServiceImpl implements ParticipantService {
 	
 	private static final Logger logger = Logger.getLogger(ParticipantServiceImpl.class.getName());
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=diamant.diamant)")
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 
 	/* 

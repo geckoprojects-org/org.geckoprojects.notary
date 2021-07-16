@@ -35,7 +35,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(scope = ServiceScope.PROTOTYPE)
 public class NotificationServiceImpl implements NotificationService {
 
-	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=diamant.diamant)")
+	@Reference(scope=ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 	
 	/* 

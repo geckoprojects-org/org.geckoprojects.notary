@@ -1,6 +1,8 @@
 package org.gecko.notaryservice.itest;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 /**
  * Copyright (c) 2012 - 2018 Data In Motion and others.
  * All rights reserved. 
@@ -13,15 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  *     Data In Motion - initial API and implementation
  */
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -45,7 +46,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -59,7 +59,6 @@ import org.osgi.test.common.annotation.InjectService;
 import org.osgi.test.common.dictionary.Dictionaries;
 import org.osgi.test.junit5.context.BundleContextExtension;
 import org.osgi.test.junit5.service.ServiceExtension;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 /**
  * <p>
@@ -495,9 +494,10 @@ public class AssetServiceIntegrationTest {
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
 		assertTrue(repository instanceof QueryRepository);
 		QueryRepository queryRepository = (QueryRepository) repository;
-		assertNotNull(assetService);
 		String ownerId = "myOwner";
 		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
 		a1.setId("a1");
@@ -528,9 +528,10 @@ public class AssetServiceIntegrationTest {
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
 		assertTrue(repository instanceof QueryRepository);
 		QueryRepository queryRepository = (QueryRepository) repository;
-		assertNotNull(assetService);
 		String ownerId = "myOwner";
 		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
 		a1.setId("a1");
@@ -543,7 +544,7 @@ public class AssetServiceIntegrationTest {
 		pl.add(a2);
 		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
 		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
 		Mockito.when(builder.build()).thenReturn(query);
 		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
 		Mockito.when(queryRepository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(pl);
@@ -558,388 +559,495 @@ public class AssetServiceIntegrationTest {
 		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.any());
 	}
 	
-//	@Test(expected = IllegalStateException.class)
-//	public void testSearchAssetInEntry_NullParameters() {
-//		setupServices();
-//		assetService.searchAssetInEntry(null, null);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testSearchAssetInEntry_OnlyValue() {
-//		setupServices();
-//		assetService.searchAssetInEntry(null, "test");
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testSearchAssetInEntry_NoEntries() {
-//		List<TransactionEntry> te = new ArrayList<TransactionEntry>();
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		Mockito.when(repository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(te);
-//		
-//		setupServices();
-//		List<Asset> assets = assetService.searchAssetInEntry(DiamantPackage.Literals.OUTBOUND_LOGISTIC__TRANSPORTATION_TRACKING_ID, "2");
-//		assertNotNull(assets);
-//		assertTrue(assets.isEmpty());
-//		
-//		Mockito.verify(repository, Mockito.times(1)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testSearchAssetInEntry_EntriesNoAssetIds() {
-//		List<TransactionEntry> te = new ArrayList<TransactionEntry>();
-//		TransactionEntry te1 = DiamantFactory.eINSTANCE.createTransactionEntry();
-//		te.add(te1);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		Mockito.when(repository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(te);
-//		
-//		setupServices();
-//		List<Asset> assets = assetService.searchAssetInEntry(DiamantPackage.Literals.OUTBOUND_LOGISTIC__TRANSPORTATION_TRACKING_ID, "2");
-//		assertNotNull(assets);
-//		assertTrue(assets.isEmpty());
-//		Mockito.verify(repository, Mockito.times(1)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testSearchAssetInEntry_Result() {
-//		List<TransactionEntry> te = new ArrayList<TransactionEntry>();
-//		TransactionEntry te1 = DiamantFactory.eINSTANCE.createTransactionEntry();
-//		te1.setAssetId("123");
-//		te.add(te1);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.in(Mockito.any(Object[].class))).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Product p = DiamantFactory.eINSTANCE.createProduct();
-//		p.setId("123");
-//		List<Asset> al = new ArrayList<Asset>();
-//		al.add(p);
-//		Mockito.when(repository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(te, al);
-//		
-//		setupServices();
-//		List<Asset> assets = assetService.searchAssetInEntry(DiamantPackage.Literals.OUTBOUND_LOGISTIC__TRANSPORTATION_TRACKING_ID, "2");
-//		assertNotNull(assets);
-//		assertEquals(1, assets.size());
-//		assertEquals(1, assets.stream().filter(a->a.getId().equals("123")).count());
-//		assertEquals(DiamantPackage.Literals.TRANSACTION_ENTRY, ecC.getAllValues().get(0));
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getAllValues().get(1));
-//		
-//		Mockito.verify(repository, Mockito.times(2)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
-//		Mockito.verify(textProvider, Mockito.times(1)).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testGetAssetByOwner_NoOwnerNoType() {
-//		setupServices();
-//		assetService.getAssetsByOwner(null, null);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testGetAssetByOwner_NoOwner() {
-//		setupServices();
-//		assetService.getAssetsByOwner(null, DiamantPackage.Literals.PRODUCT);
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testGetAssetByOwner_Result() {
-//		String ownerId = "myOwner";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("p1");
-//		p1.setCreatorId(ownerId);
-//		Product p2 = DiamantFactory.eINSTANCE.createProduct();
-//		p2.setId("p2");
-//		p2.setCreatorId(ownerId);
-//		List<Product> pl = new ArrayList<Product>();
-//		pl.add(p1);
-//		pl.add(p2);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		Mockito.when(repository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(pl);
-//		
-//		setupServices();
-//		List<Asset> product = assetService.getAssetsByOwner(ownerId, DiamantPackage.Literals.PRODUCT);
-//		assertNotNull(product);
-//		assertEquals(2, product.size());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p1")).count());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p2")).count());
-//		
-//		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testGetAssetByOwner_ResultDefaultType() {
-//		String ownerId = "myOwner";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("p1");
-//		p1.setCreatorId(ownerId);
-//		Product p2 = DiamantFactory.eINSTANCE.createProduct();
-//		p2.setId("p2");
-//		p2.setCreatorId(ownerId);
-//		List<Product> pl = new ArrayList<Product>();
-//		pl.add(p1);
-//		pl.add(p2);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(pl);
-//		
-//		setupServices();
-//		List<Asset> product = assetService.getAssetsByOwner(ownerId, null);
-//		assertNotNull(product);
-//		assertEquals(2, product.size());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p1")).count());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p2")).count());
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		
-//		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testGetAssetByParticipant_NoOwnerNoType() {
-//		setupServices();
-//		assetService.getAssetsByParticipant(null, null);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testGetAssetByParticipant_NoOwner() {
-//		setupServices();
-//		assetService.getAssetsByParticipant(null, DiamantPackage.Literals.PRODUCT);
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testGetAssetByParticipant_Result() {
-//		String ownerId = "myOwner";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("p1");
-//		p1.setCreatorId(ownerId);
-//		Product p2 = DiamantFactory.eINSTANCE.createProduct();
-//		p2.setId("p2");
-//		p2.setCreatorId(ownerId);
-//		List<Product> pl = new ArrayList<Product>();
-//		pl.add(p1);
-//		pl.add(p2);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		Mockito.when(repository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(pl);
-//		
-//		setupServices();
-//		List<Asset> product = assetService.getAssetsByParticipant(ownerId, DiamantPackage.Literals.PRODUCT);
-//		assertNotNull(product);
-//		assertEquals(2, product.size());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p1")).count());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p2")).count());
-//		
-//		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testGetAssetByParticipant_ResultDefaultType() {
-//		String ownerId = "myOwner";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("p1");
-//		p1.setCreatorId(ownerId);
-//		Product p2 = DiamantFactory.eINSTANCE.createProduct();
-//		p2.setId("p2");
-//		p2.setCreatorId(ownerId);
-//		List<Product> pl = new ArrayList<Product>();
-//		pl.add(p1);
-//		pl.add(p2);
-//		Mockito.when(repository.createQueryBuilder()).thenReturn(builder);
-//		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
-//		Mockito.when(builder.simpleValue(Mockito.anyObject())).thenReturn(builder);
-//		Mockito.when(builder.build()).thenReturn(query);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(pl);
-//		
-//		setupServices();
-//		List<Asset> product = assetService.getAssetsByParticipant(ownerId, null);
-//		assertNotNull(product);
-//		assertEquals(2, product.size());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p1")).count());
-//		assertEquals(1, product.stream().filter(p->p.getId().equals("p2")).count());
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		
-//		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testUpdateOwner_NullAssetNullOwnerNullType() {
-//		setupServices();
-//		assetService.updateOwner(null, null, null);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testUpdateOwner_NoAssetNullOwnerNullType() {
-//		setupServices();
-//		assetService.updateOwner(null, "test", null);
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testUpdateOwner_NullAssetNoOwnerNullType() {
-//		setupServices();
-//		assetService.updateOwner("test", null, null);
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testUpdateOwner_NullTypeNoAsset() {
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(null);
-//		Participant p = DiamantFactory.eINSTANCE.createParticipant();
-//		p.setId("test");
-//		p.setName("Emil Tester");
-//		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
-//		setupServices();
-//		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
-//		assertNull(resultAsset);
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		Mockito.verify(repository, Mockito.never()).save(Mockito.any(EObject.class));
-//		Mockito.verify(participantService, Mockito.never()).appendAsset(Mockito.anyString(), Mockito.any(Asset.class));
-//		Mockito.verify(transactionEntryService, Mockito.never()).createAssetModificationTransaction(Mockito.any(Asset.class), Mockito.any(Asset.class));
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testUpdateOwner_NullTypeNoParticipant() {
-//		String creatorId = "myCreator";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("asset1");
-//		p1.setCreatorId(creatorId);
-//		p1.setOwnerId(creatorId);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
-//		Participant p = DiamantFactory.eINSTANCE.createParticipant();
-//		p.setId("test");
-//		p.setName("Emil Tester");
-//		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
-//		setupServices();
-//		assertEquals(creatorId, p1.getOwnerId());
-//		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
-//		assertEquals("test", resultAsset.getOwnerId());
-//		assertEquals(creatorId, p1.getOwnerId());
-//		assertNotEquals(p1, resultAsset);
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		
-//		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
-//		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testUpdateOwner_NoParticipant() {
-//		String creatorId = "myCreator";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("asset1");
-//		p1.setCreatorId(creatorId);
-//		p1.setOwnerId(creatorId);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
-//		Participant p = DiamantFactory.eINSTANCE.createParticipant();
-//		p.setId("test");
-//		p.setName("Emil Tester");
-//		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
-//		setupServices();
-//		assertEquals(creatorId, p1.getOwnerId());
-//		Asset resultAsset = assetService.updateOwner("test", "asset1", DiamantPackage.Literals.PRODUCT);
-//		assertEquals("test", resultAsset.getOwnerId());
-//		assertEquals(creatorId, p1.getOwnerId());
-//		assertNotEquals(p1, resultAsset);
-//		assertEquals(DiamantPackage.Literals.PRODUCT, ecC.getValue());
-//		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
-//		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@Test(expected = IllegalStateException.class)
-//	public void testUpdateOwner_NoValidParticipant() {
-//		String creatorId = "myCreator";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("asset1");
-//		p1.setCreatorId(creatorId);
-//		p1.setOwnerId(creatorId);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
-//		Mockito.when(participantService.getDefinition(Mockito.anyString())).thenReturn(null);
-//		setupServices();
-//		assertEquals(creatorId, p1.getOwnerId());
-//		assetService.updateOwner("test", "asset1", DiamantPackage.Literals.PRODUCT);
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testUpdateOwner_Participant() {
-//		String creatorId = "myCreator";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("asset1");
-//		p1.setCreatorId(creatorId);
-//		p1.setOwnerId(creatorId);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
-//		Participant p = DiamantFactory.eINSTANCE.createParticipant();
-//		p.setId("test");
-//		p.setName("Emil Tester");
-//		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
-//		setupServices();
-//		assertEquals(creatorId, p1.getOwnerId());
-//		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
-//		assertEquals(creatorId, p1.getOwnerId());
-//		assertEquals("test", resultAsset.getOwnerId());
-//		assertEquals(p.getDescription(), resultAsset.getOwnerName());
-//		assertNotEquals(p1, resultAsset);
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
-//		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
-//	
-//	@SuppressWarnings("unchecked")
-//	@Test
-//	public void testUpdateOwner_ParticipantSameOwner() {
-//		String creatorId = "myCreator";
-//		Product p1 = DiamantFactory.eINSTANCE.createProduct();
-//		p1.setId("asset1");
-//		p1.setCreatorId(creatorId);
-//		p1.setOwnerId(creatorId);
-//		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
-//		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
-//		Participant p = DiamantFactory.eINSTANCE.createParticipant();
-//		p.setId("test");
-//		p.setName("Emil Tester");
-//		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
-//		setupServices();
-//		assertEquals(creatorId, p1.getOwnerId());
-//		Asset resultAsset = assetService.updateOwner(creatorId, "asset1", null);
-//		assertEquals(creatorId, p1.getOwnerId());
-//		assertEquals(p1, resultAsset);
-//		assertEquals(DiamantPackage.Literals.ASSET, ecC.getValue());
-//		Mockito.verify(repository, Mockito.never()).save(Mockito.any(EObject.class));
-//		Mockito.verify(participantService, Mockito.never()).appendAsset(Mockito.anyString(), Mockito.any(Asset.class));
-//		Mockito.verify(transactionEntryService, Mockito.never()).createAssetModificationTransaction(Mockito.any(Asset.class), Mockito.any(Asset.class));
-//		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
-//	}
+	@Test
+	public void testSearchAssetInEntry_NullParameters(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAssetInEntry(null, null);
+		});
+	}
+	
+	@Test
+	public void testSearchAssetInEntry_OnlyValue(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAssetInEntry(null, "test");
+		});
+	}
+	
+	@Test
+	public void testSearchAssetInEntry_NoEntries(@InjectService AssetService assetService, 
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;
+		
+		List<EObject> te = new ArrayList<>();
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		Mockito.when(queryRepository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(te);
+		// always return the whole list
+		List<Asset> assets = assetService.searchAssetInEntry(NotaryPackage.Literals.TRANSACTION_ENTRY__COMMENT, "test");
+		assertNotNull(assets);
+		assertTrue(assets.isEmpty());
+		
+		Mockito.verify(queryRepository, Mockito.times(1)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testSearchAssetInEntry_EntriesNoAssetIds(@InjectService AssetService assetService, 
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		List<EObject> te = new ArrayList<>();
+		TransactionEntry te1 = NotaryFactory.eINSTANCE.createTransactionEntry();
+		te.add(te1);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		Mockito.when(queryRepository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(te);
+		// always return whole list
+		List<Asset> assets = assetService.searchAssetInEntry(NotaryPackage.Literals.TRANSACTION_ENTRY__COMMENT, "test");
+		assertNotNull(assets);
+		assertTrue(assets.isEmpty());
+		Mockito.verify(queryRepository, Mockito.times(1)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testSearchAssetInEntry_Result(@InjectService AssetService assetService, 
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		List<EObject> te = new ArrayList<>();
+		TransactionEntry te1 = NotaryFactory.eINSTANCE.createTransactionEntry();
+		te1.setAssetId("123");
+		te.add(te1);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.in(Mockito.any(Object[].class))).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Asset a = NotaryFactory.eINSTANCE.createAsset();
+		a.setId("123");
+		List<EObject> al = new ArrayList<EObject>();
+		al.add(a);
+		Mockito.when(queryRepository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.any())).thenReturn(te, al);
+		
+		List<Asset> assets = assetService.searchAssetInEntry(NotaryPackage.Literals.TRANSACTION_ENTRY__COMMENT, "test");
+		assertNotNull(assets);
+		assertEquals(1, assets.size());
+		assertEquals(1, assets.stream().filter(as->as.getId().equals("123")).count());
+		assertEquals(NotaryPackage.Literals.TRANSACTION_ENTRY, ecC.getAllValues().get(0));
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getAllValues().get(1));
+		
+		Mockito.verify(queryRepository, Mockito.times(2)).getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap());
+		Mockito.verify(textProvider, Mockito.times(1)).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testGetAssetByOwner_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetsByOwner(null, null);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByOwner_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetsByOwner(null, NotaryPackage.Literals.ASSET);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByOwner_Result(@InjectService AssetService assetService, 
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		String ownerId = "myOwner";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("a1");
+		a1.setCreatorId(ownerId);
+		Asset a2 = NotaryFactory.eINSTANCE.createAsset();
+		a2.setId("a2");
+		a2.setCreatorId(ownerId);
+		List<EObject> al = new ArrayList<>();
+		al.add(a1);
+		al.add(a2);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		Mockito.when(queryRepository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(al);
+		
+		List<Asset> product = assetService.getAssetsByOwner(ownerId, NotaryPackage.Literals.ASSET);
+		assertNotNull(product);
+		assertEquals(2, product.size());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a1")).count());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a2")).count());
+		
+		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testGetAssetByOwner_ResultDefaultType(@InjectService AssetService assetService, 
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		String ownerId = "myOwner";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("a1");
+		a1.setCreatorId(ownerId);
+		Asset a2 = NotaryFactory.eINSTANCE.createAsset();
+		a2.setId("a2");
+		a2.setCreatorId(ownerId);
+		List<EObject> al = new ArrayList<>();
+		al.add(a1);
+		al.add(a2);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(queryRepository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.any())).thenReturn(al);
+		
+		List<Asset> assets = assetService.getAssetsByOwner(ownerId, null);
+		assertNotNull(assets);
+		assertEquals(2, assets.size());
+		assertEquals(1, assets.stream().filter(p->p.getId().equals("a1")).count());
+		assertEquals(1, assets.stream().filter(p->p.getId().equals("a2")).count());
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		
+		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetsByParticipant(null, null);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetsByParticipant(null, NotaryPackage.Literals.ASSET);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_Result(@InjectService AssetService assetService,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		String ownerId = "myOwner";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("a1");
+		a1.setCreatorId(ownerId);
+		Asset a2 = NotaryFactory.eINSTANCE.createAsset();
+		a2.setId("a2");
+		a2.setCreatorId(ownerId);
+		List<EObject> al = new ArrayList<>();
+		al.add(a1);
+		al.add(a2);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		Mockito.when(queryRepository.getEObjectsByQuery(Mockito.any(EClass.class), Mockito.any(IQuery.class), Mockito.any())).thenReturn(al);
+		
+		List<Asset> product = assetService.getAssetsByParticipant(ownerId, NotaryPackage.Literals.ASSET);
+		assertNotNull(product);
+		assertEquals(2, product.size());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a1")).count());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a2")).count());
+		
+		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_ResultDefaultType(@InjectService AssetService assetService,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(assetService);
+		assertTrue(repository instanceof QueryRepository);
+		QueryRepository queryRepository = (QueryRepository) repository;	
+		String ownerId = "myOwner";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("a1");
+		a1.setCreatorId(ownerId);
+		Asset a2 = NotaryFactory.eINSTANCE.createAsset();
+		a2.setId("a2");
+		a2.setCreatorId(ownerId);
+		List<EObject> al = new ArrayList<>();
+		al.add(a1);
+		al.add(a2);
+		Mockito.when(queryRepository.createQueryBuilder()).thenReturn(builder);
+		Mockito.when(builder.column(Mockito.any(EAttribute.class))).thenReturn(builder);
+		Mockito.when(builder.simpleValue(Mockito.any())).thenReturn(builder);
+		Mockito.when(builder.build()).thenReturn(query);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(queryRepository.getEObjectsByQuery(ecC.capture(), Mockito.any(IQuery.class), Mockito.anyMap())).thenReturn(al);
+		
+		List<Asset> product = assetService.getAssetsByParticipant(ownerId, null);
+		assertNotNull(product);
+		assertEquals(2, product.size());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a1")).count());
+		assertEquals(1, product.stream().filter(p->p.getId().equals("a2")).count());
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		
+		Mockito.verify(textProvider, Mockito.times(2)).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testUpdateOwner_NullAssetNullOwnerNullType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.updateOwner(null, null, null);
+		});
+	}
+	
+	@Test
+	public void testUpdateOwner_NoAssetNullOwnerNullType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.updateOwner(null, "test", null);
+		});
+	}
+	
+	@Test
+	public void testUpdateOwner_NullAssetNoOwnerNullType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.updateOwner("test", null, null);
+		});
+	}
+	
+	@Test
+	public void testUpdateOwner_NullTypeNoAsset(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService TransactionEntryService transactionEntryService,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(participantService);
+		assertNotNull(transactionEntryService);
+		assertNotNull(assetService);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(null);
+		Participant p = NotaryFactory.eINSTANCE.createParticipant();
+		p.setId("test");
+		p.setName("Emil Tester");
+		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
+		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
+		assertNull(resultAsset);
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		Mockito.verify(repository, Mockito.never()).save(Mockito.any(EObject.class));
+		Mockito.verify(participantService, Mockito.never()).appendAsset(Mockito.anyString(), Mockito.any(Asset.class));
+		Mockito.verify(transactionEntryService, Mockito.never()).createAssetModificationTransaction(Mockito.any(Asset.class), Mockito.any(Asset.class));
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.anyMap());
+	}
+	
+	@Test
+	public void testUpdateOwner_NullTypeNoParticipant(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService EventAdmin eventAdmin,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(participantService);
+		assertNotNull(eventAdmin);
+		assertNotNull(assetService);
+		String creatorId = "myCreator";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("asset1");
+		a1.setCreatorId(creatorId);
+		a1.setOwnerId(creatorId);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(a1);
+		Participant p = NotaryFactory.eINSTANCE.createParticipant();
+		p.setId("test");
+		p.setName("Emil Tester");
+		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
+		assertEquals(creatorId, a1.getOwnerId());
+		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
+		assertEquals("test", resultAsset.getOwnerId());
+		assertEquals(creatorId, a1.getOwnerId());
+		assertNotEquals(a1, resultAsset);
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		
+		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
+		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testUpdateOwner_NoParticipant(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService EventAdmin eventAdmin,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(participantService);
+		assertNotNull(eventAdmin);
+		assertNotNull(assetService);
+		String creatorId = "myCreator";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("asset1");
+		a1.setCreatorId(creatorId);
+		a1.setOwnerId(creatorId);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(a1);
+		Participant p = NotaryFactory.eINSTANCE.createParticipant();
+		p.setId("test");
+		p.setName("Emil Tester");
+		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
+		assertEquals(creatorId, a1.getOwnerId());
+		Asset resultAsset = assetService.updateOwner("test", "asset1", NotaryPackage.Literals.ASSET);
+		assertEquals("test", resultAsset.getOwnerId());
+		assertEquals(creatorId, a1.getOwnerId());
+		assertNotEquals(a1, resultAsset);
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
+		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testUpdateOwner_NoValidParticipant(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertNotNull(participantService);
+		String creatorId = "myCreator";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("asset1");
+		a1.setCreatorId(creatorId);
+		a1.setOwnerId(creatorId);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(a1);
+		Mockito.when(participantService.getDefinition(Mockito.anyString())).thenReturn(null);
+		assertEquals(creatorId, a1.getOwnerId());
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.updateOwner("test", "asset1", NotaryPackage.Literals.ASSET);
+		});
+	}
+	
+	@Test
+	public void testUpdateOwner_Participant(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService EventAdmin eventAdmin,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(participantService);
+		assertNotNull(eventAdmin);
+		assertNotNull(assetService);
+		String creatorId = "myCreator";
+		Asset a1 = NotaryFactory.eINSTANCE.createAsset();
+		a1.setId("asset1");
+		a1.setCreatorId(creatorId);
+		a1.setOwnerId(creatorId);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(a1);
+		Participant p = NotaryFactory.eINSTANCE.createParticipant();
+		p.setId("test");
+		p.setName("Emil Tester");
+		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
+		assertEquals(creatorId, a1.getOwnerId());
+		Asset resultAsset = assetService.updateOwner("test", "asset1", null);
+		assertEquals(creatorId, a1.getOwnerId());
+		assertEquals("test", resultAsset.getOwnerId());
+		assertEquals(p.getDescription(), resultAsset.getOwnerName());
+		assertNotEquals(a1, resultAsset);
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(EObject.class), Mockito.anyMap());
+		Mockito.verify(eventAdmin, Mockito.times(1)).sendEvent(Mockito.any(Event.class));
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
+	
+	@Test
+	public void testUpdateOwner_ParticipantSameOwner(@InjectService AssetService assetService, 
+			@InjectService ParticipantService participantService,
+			@InjectService TransactionEntryService transactionEntryService,
+			@InjectService EventAdmin eventAdmin,
+			@InjectService TextProvider textProvider,
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(textProvider);
+		assertNotNull(participantService);
+		assertNotNull(transactionEntryService);
+		assertNotNull(eventAdmin);
+		assertNotNull(assetService);
+		String creatorId = "myCreator";
+		Asset p1 = NotaryFactory.eINSTANCE.createAsset();
+		p1.setId("asset1");
+		p1.setCreatorId(creatorId);
+		p1.setOwnerId(creatorId);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.anyString(), Mockito.anyMap())).thenReturn(p1);
+		Participant p = NotaryFactory.eINSTANCE.createParticipant();
+		p.setId("test");
+		p.setName("Emil Tester");
+		Mockito.when(participantService.getParticipant(Mockito.anyString())).thenReturn(p);
+		assertEquals(creatorId, p1.getOwnerId());
+		Asset resultAsset = assetService.updateOwner(creatorId, "asset1", null);
+		assertEquals(creatorId, p1.getOwnerId());
+		assertEquals(p1, resultAsset);
+		assertEquals(NotaryPackage.Literals.ASSET, ecC.getValue());
+		Mockito.verify(repository, Mockito.never()).save(Mockito.any(EObject.class));
+		Mockito.verify(participantService, Mockito.never()).appendAsset(Mockito.anyString(), Mockito.any(Asset.class));
+		Mockito.verify(transactionEntryService, Mockito.never()).createAssetModificationTransaction(Mockito.any(Asset.class), Mockito.any(Asset.class));
+		Mockito.verify(textProvider, Mockito.never()).provideText(Mockito.any(EObject.class), Mockito.any());
+	}
 	
 }

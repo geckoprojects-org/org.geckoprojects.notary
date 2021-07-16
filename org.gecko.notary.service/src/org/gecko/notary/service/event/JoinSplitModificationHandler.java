@@ -45,7 +45,7 @@ public class JoinSplitModificationHandler implements EventHandler {
 	private static final Logger logger = Logger.getLogger(JoinSplitModificationHandler.class.getName());
 	@Reference
 	private TransactionEntryService transactionEntryService;
-	@Reference(target="(repo_id=diamant.diamant)")
+	@Reference(target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 	
 	/* 

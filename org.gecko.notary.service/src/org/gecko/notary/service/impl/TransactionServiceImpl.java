@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.ServiceScope;
 @Component(scope = ServiceScope.PROTOTYPE, service = TransactionService.class)
 public class TransactionServiceImpl implements TransactionService {
 	
-	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=diamant.diamant)")
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
 	
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
