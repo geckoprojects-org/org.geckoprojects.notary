@@ -1,4 +1,4 @@
-package org.gecko.notaryservice.itest.textprovider;
+package org.gecko.notary.service.itest.textprovider;
 ///**
 // * Copyright (c) 2012 - 2018 Data In Motion and others.
 // * All rights reserved. 

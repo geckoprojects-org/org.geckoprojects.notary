@@ -23,6 +23,6 @@
 DynamicImport-Package: org.eclipse.emf.*
 Bundle-Version: ${notaryVersion}
 Export-Package: \
-	org.gecko.notaryservice.itest.events,\
-	org.gecko.notaryservice.itest,\
-	org.gecko.notaryservice.itest.textprovider
+	org.gecko.notary.service.itest.events,\
+	org.gecko.notary.service.itest,\
+	org.gecko.notary.service.itest.textprovider

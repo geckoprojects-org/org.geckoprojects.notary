@@ -9,7 +9,7 @@
  * Contributors:
  *     Data In Motion - initial API and implementation
  */
-package org.gecko.notaryservice.itest;
+package org.gecko.notary.service.itest;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

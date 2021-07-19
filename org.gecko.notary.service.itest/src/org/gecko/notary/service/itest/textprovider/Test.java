@@ -9,7 +9,7 @@
  * Contributors:
  *     Data In Motion - initial API and implementation
  */
-package org.gecko.notaryservice.itest.textprovider;
+package org.gecko.notary.service.itest.textprovider;
 
 /**
  * 

@@ -1,4 +1,4 @@
-package org.gecko.notaryservice.itest.events;
+package org.gecko.notary.service.itest.events;
 /**
  * Copyright (c) 2012 - 2018 Data In Motion and others.
  * All rights reserved. 
