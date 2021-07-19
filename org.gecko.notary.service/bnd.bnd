@@ -1,0 +1,15 @@
+-buildpath: \
+	osgi.annotation;version='7.0.0',\
+	osgi.cmpn;version='7.0.0',\
+	org.eclipse.emf.ecore;version=latest,\
+	org.eclipse.emf.common;version=latest,\
+	org.gecko.emf.repository.api;version=latest,\
+	org.gecko.emf.mongo.api;version=latest,\
+	org.gecko.notary.model;version=project
+
+javac.source: 11
+javac.target: 11
+
+Bundle-Version: ${notaryVersion}
+
+-sub: *.bnd

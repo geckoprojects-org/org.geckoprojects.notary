@@ -1,0 +1,28 @@
+-buildpath: \
+	org.gecko.notary.model;version=project,\
+	org.gecko.notary.service.impl;version=latest,\
+	org.eclipse.emf.common;version=latest,\
+	org.eclipse.emf.ecore;version=latest,\
+	junit-jupiter-api,\
+	org.osgi.test.junit5,\
+	org.osgi.framework,\
+	org.osgi.test.common,\
+	org.osgi.service.cm,\
+	org.osgi.util.promise,\
+	org.osgi.annotation.versioning,\
+	org.osgi.test.assertj.framework,\
+	org.osgi.service.event,\
+	org.mockito.mockito-core,\
+	org.gecko.emf.repository.api,\
+	junit-jupiter-engine;version='5.7',\
+	junit-platform-commons,\
+	assertj-core,\
+	org.apiguardian.api
+
+# Without DynamicImport Mockito will not find certain 
+DynamicImport-Package: org.eclipse.emf.*
+Bundle-Version: ${notaryVersion}
+Export-Package: \
+	org.gecko.notary.service.itest.events,\
+	org.gecko.notary.service.itest,\
+	org.gecko.notary.service.itest.textprovider
