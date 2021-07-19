@@ -33,6 +33,7 @@ notaryVersion: 0.0.1-SNAPSHOT
 ##  All Project Deps
 dependencies.project: \
 	org.bndtools:org.bndtools.templates.osgi:5.3.0,\
+	org.apiguardian:apiguardian-api:1.1.2,\
 	org.gecko.runtime:org.gecko.templates:1.0.31,\
 	biz.aQute:biz.aQute.gogo.commands.provider:1.7.0,\
 	org.geckoprojects.repository:org.gecko.emf.repository.api:9.2.2,\

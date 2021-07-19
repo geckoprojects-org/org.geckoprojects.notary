@@ -50,6 +50,12 @@
       <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/CUSTOMER_CARE"/>
       <genEnumLiterals ecoreEnumLiteral="notary.ecore#//DocumentationType/COMMUNITY_PAGE"/>
     </genEnums>
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="notary.ecore#//FeedbackType">
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//FeedbackType/OTHER"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//FeedbackType/COMPLAINT"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//FeedbackType/SURVEY"/>
+      <genEnumLiterals ecoreEnumLiteral="notary.ecore#//FeedbackType/FEEDBACK"/>
+    </genEnums>
     <genClasses ecoreClass="notary.ecore#//Participant">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Participant/id"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Participant/name"/>
@@ -166,6 +172,52 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/description"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/type"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//DocumentationReference/reference"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//FeedbackTransaction">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//FeedbackTransaction/feedback"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//Feedback">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Feedback/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Feedback/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Feedback/description"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//Feedback/item"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//Feedback/type"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//FeedbackResult">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackResult/timestamp"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackResult/participantId"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//FeedbackResult/feedback"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackResult/feedbackId"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference notary.ecore#//FeedbackResult/resultItem"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//FeedbackResultItem">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference notary.ecore#//FeedbackResultItem/item"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackResultItem/itemId"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackResultItem/value"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="notary.ecore#//FeedbackItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackItem/id"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackItem/optional"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackItem/question"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackItem/description"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//FeedbackItem/orderCount"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//BooleanFeedbackItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//BooleanFeedbackItem/defaultValue"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//TextFeedbackItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//TextFeedbackItem/defaultValue"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//ScoreFeedbackItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ScoreFeedbackItem/defaultValue"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ScoreFeedbackItem/minScore"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ScoreFeedbackItem/maxScore"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ScoreFeedbackItem/minDescription"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//ScoreFeedbackItem/maxDescription"/>
+    </genClasses>
+    <genClasses ecoreClass="notary.ecore#//OptionFeedbackItem">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//OptionFeedbackItem/value"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute notary.ecore#//OptionFeedbackItem/multipleValues"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

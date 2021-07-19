@@ -27,6 +27,8 @@ import org.gecko.emf.repository.query.IQuery;
 import org.gecko.emf.repository.query.QueryRepository;
 import org.gecko.notary.model.notary.AssetChangeType;
 import org.gecko.notary.model.notary.AssetTransaction;
+import org.gecko.notary.model.notary.Feedback;
+import org.gecko.notary.model.notary.FeedbackTransaction;
 import org.gecko.notary.model.notary.NotaryFactory;
 import org.gecko.notary.model.notary.NotaryPackage;
 import org.gecko.notary.model.notary.Participant;
@@ -187,6 +189,28 @@ public class TransactionServiceImpl implements TransactionService {
 		return transaction;
 	}
 
+	/* 
+	 * (non-Javadoc)
+	 * @see de.dim.diamant.service.api.TransactionService#createFeedbackTransaction(de.dim.diamant.ParticipantDefinition, de.dim.diamant.Feedback, boolean)
+	 */
+	@Override
+	public FeedbackTransaction createFeedbackTransaction(ParticipantDefinition participantDef, Feedback feedback,
+			boolean share) {
+		if (participantDef == null) {
+			throw new IllegalStateException("Cannot create a feedback transaction without a participant definition");
+		}
+		if (feedback == null) {
+			throw new IllegalStateException("Cannot create a feedback transaction without a feedback isntance");
+		}
+		FeedbackTransaction transaction = NotaryFactory.eINSTANCE.createFeedbackTransaction();
+		transaction.setParticipantId(participantDef.getId());
+		transaction.setType(TransactionType.FEEDBACK);
+		transaction.setDescription(feedback.getName());
+		transaction.setShare(share);
+		transaction.setFeedback(feedback);
+		participantDef.getTransaction().add(transaction);
+		return transaction;
+	}
 	
 	/* 
 	 * (non-Javadoc)

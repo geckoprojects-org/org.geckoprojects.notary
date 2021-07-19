@@ -15,6 +15,8 @@ import java.util.List;
 
 import org.gecko.notary.model.notary.AssetChangeType;
 import org.gecko.notary.model.notary.AssetTransaction;
+import org.gecko.notary.model.notary.Feedback;
+import org.gecko.notary.model.notary.FeedbackTransaction;
 import org.gecko.notary.model.notary.ParticipantDefinition;
 import org.gecko.notary.model.notary.Transaction;
 import org.gecko.notary.model.notary.TransactionType;
@@ -73,6 +75,15 @@ public interface TransactionService {
 	 * @return the {@link AssetTransaction}
 	 */
 	public AssetTransaction createAssetTransaction(ParticipantDefinition participantDef, AssetChangeType type);
+
+	/**
+	 * Creates a {@link FeedbackTransaction} for a given {@link Feedback} template.
+	 * @param participantDef the participant definition, that process step belongs to
+	 * @param feedback the {@link Feedback} template, must not be <code>null</code>
+	 * @param share set to <code>true</code>, to make this process step public available, otherwise use <code>false</code>
+	 * @return a feedback process step
+	 */
+	public FeedbackTransaction createFeedbackTransaction(ParticipantDefinition participantDef, Feedback feedback, boolean share);
 
 	/**
 	 * Returns process steps for a given participant and process step type

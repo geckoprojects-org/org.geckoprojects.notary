@@ -7,17 +7,22 @@
 	org.osgi.test.junit5,\
 	org.osgi.framework,\
 	org.osgi.test.common,\
-	assertj-core,\
 	org.osgi.service.cm,\
 	org.osgi.util.promise,\
 	org.osgi.annotation.versioning,\
 	org.osgi.test.assertj.framework,\
 	org.osgi.service.event,\
 	org.mockito.mockito-core,\
-	org.gecko.emf.repository.api
+	org.gecko.emf.repository.api,\
+	junit-jupiter-engine;version='5.7',\
+	junit-platform-commons,\
+	assertj-core,\
+	org.apiguardian.api
 
 # Without DynamicImport Mockito will not find certain 
 DynamicImport-Package: org.eclipse.emf.*
 Bundle-Version: ${notaryVersion}
-Private-Package: org.gecko.notaryservice.itest
-Export-Package: org.gecko.notaryservice.itest.events
+Export-Package: \
+	org.gecko.notaryservice.itest.events,\
+	org.gecko.notaryservice.itest,\
+	org.gecko.notaryservice.itest.textprovider
