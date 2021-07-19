@@ -1,4 +1,3 @@
-package org.gecko.notary.service.itest;
 /**
  * Copyright (c) 2012 - 2018 Data In Motion and others.
  * All rights reserved. 
@@ -10,6 +9,7 @@ package org.gecko.notary.service.itest;
  * Contributors:
  *     Data In Motion - initial API and implementation
  */
+package org.gecko.notary.service.itest;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
