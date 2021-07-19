@@ -18,7 +18,7 @@
 	bnd.identity;id='junit-jupiter-engine',\
 	bnd.identity;id='junit-platform-launcher',\
 	bnd.identity;id='junit-platform-commons',\
-	bnd.identity;id='org.gecko.notaryservice.itest',\
+	bnd.identity;id='org.gecko.notary.service.itest',\
 	bnd.identity;id='org.gecko.notary.service.impl'
 	
 # This will help us keep -runbundles sorted
@@ -46,7 +46,7 @@
 	org.gecko.emf.repository.api;version='[9.2.2,9.2.3)',\
 	org.gecko.notary.model;version=snapshot,\
 	org.gecko.notary.service.impl;version=snapshot,\
-	org.gecko.notaryservice.itest;version=snapshot,\
+	org.gecko.notary.service.itest;version=snapshot,\
 	org.mockito.mockito-core;version='[3.6.0,3.6.1)',\
 	org.objenesis;version='[3.1.0,3.1.1)',\
 	org.opentest4j;version='[1.2.0,1.2.1)',\
