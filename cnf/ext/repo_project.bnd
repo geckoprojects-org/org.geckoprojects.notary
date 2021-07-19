@@ -26,7 +26,6 @@
 -maven-release: pom
 -pom: true
 -digest: sha256
--groupid: org.geckoprojects.notary
 
 notaryVersion: 0.0.1-SNAPSHOT
 
