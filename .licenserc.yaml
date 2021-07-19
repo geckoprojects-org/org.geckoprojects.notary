@@ -16,6 +16,7 @@ header:
     - 'dist'
     - 'licenses'
     - '**/package-info.java'
+    - '**/module-info.java'
     - '**/*.bnd'
     - '**/*.bndrun'
     - '**/*.xml'
