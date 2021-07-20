@@ -3,6 +3,7 @@
 /generated/
 build/
 cnf/cache/
+cnf/local/
 .metadata
 
 
