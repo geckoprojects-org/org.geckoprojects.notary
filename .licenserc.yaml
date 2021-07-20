@@ -37,7 +37,7 @@ header:
     - '**/.project'
     - '**/*.prefs'
     - 'build.gradle'
-    - 'gradle.properties'
+    - '*.properties'
     - 'gradlew'
     - 'gradlew.bat'
     - 'settings.gradle'
