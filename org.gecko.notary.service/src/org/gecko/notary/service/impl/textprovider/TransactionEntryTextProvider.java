@@ -41,10 +41,11 @@ import org.osgi.service.component.annotations.Reference;
  * @since 19.03.2020
  */
 @Component(property = {"object=TransactionEntry", "target=TransactionEntry"})
+@SuppressWarnings({"java:S125", "java:S1172"})
 public class TransactionEntryTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(TransactionEntryTextProvider.class.getName());
-	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+	private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 	@Reference
 	private TransactionService transactionService;
 	@Reference
@@ -69,7 +70,7 @@ public class TransactionEntryTextProvider implements TextProvider {
 				t = NotaryFactory.eINSTANCE.createTransaction();
 				t.setDescription("Asset Veränderung");
 			} else {
-				logger.log(Level.WARNING, String.format("[%s] No transaction found. Returning without result", transactionId));
+				logger.log(Level.WARNING, ()->String.format("[%s] No transaction found. Returning without result", transactionId));
 				return null;
 			}
 		}
@@ -77,7 +78,7 @@ public class TransactionEntryTextProvider implements TextProvider {
 		// Set source information
 		Participant p = participantService.getParticipant(te.getParticipantId());
 		if (p == null) {
-			logger.log(Level.WARNING, String.format("[%s] No participant found. Cannot set source information", te.getParticipantId()));
+			logger.log(Level.WARNING, ()->String.format("[%s] No participant found. Cannot set source information", te.getParticipantId()));
 		} else {
 			String source = p.getDescription();
 			if (source == null) {
@@ -88,7 +89,7 @@ public class TransactionEntryTextProvider implements TextProvider {
 		String comment = createComment(te, t, p);
 		if (comment != null)
 			te.setComment(comment);
-		return null;
+		return comment;
 	}
 
 	/**
@@ -182,7 +183,7 @@ public class TransactionEntryTextProvider implements TextProvider {
 		if (template == null || entry == null) {
 			return null;
 		}
-		if (features == null || features.size() == 0) {
+		if (features == null || features.isEmpty()) {
 			return template;
 		}
 		Object[] values = features.stream()
