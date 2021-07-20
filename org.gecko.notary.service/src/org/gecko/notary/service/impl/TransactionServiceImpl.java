@@ -49,21 +49,21 @@ import org.osgi.service.component.annotations.ServiceScope;
  */
 @Component(scope = ServiceScope.PROTOTYPE, service = TransactionService.class)
 public class TransactionServiceImpl implements TransactionService {
-	
+
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED, target="(repo_id=notary.notary)")
 	private EMFRepository repository;
-	
+
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ParticipantService participantService;
-	
-	private static Map<Object, Object> loadOptions = new HashMap<Object, Object>();
-	private static Map<Object, Object> saveOptions = new HashMap<Object, Object>();
-	
+
+	private static Map<Object, Object> loadOptions = new HashMap<>();
+	private static Map<Object, Object> saveOptions = new HashMap<>();
+
 	static {
 		loadOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.TRANSACTION);
 		saveOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.TRANSACTION);
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see de.dim.diamant.service.api.TransactionService#updateTransaction(java.lang.String, de.dim.diamant.Transaction)
@@ -87,9 +87,7 @@ public class TransactionServiceImpl implements TransactionService {
 		if (transaction.getId() != null) {
 			existing = repository.getEObject(transaction.eClass(), transaction.getId(), loadOptions);
 		}
-		if (existing == null || 
-				(existing != null && 
-				!EcoreUtil.equals(existing, transaction))) {
+		if (existing == null || !EcoreUtil.equals(existing, transaction)) {
 			repository.save(transaction, saveOptions);
 			if (existing == null) {
 				definition.getTransaction().add(transaction);
@@ -109,8 +107,7 @@ public class TransactionServiceImpl implements TransactionService {
 		if (definition == null) {
 			throw new IllegalStateException("No participant found to return transactions for the given id");
 		}
-		List<Transaction> transactions = new ArrayList<Transaction>(definition.getTransaction());
-		return transactions;
+		return new ArrayList<>(definition.getTransaction());
 	}
 
 	/* 
@@ -135,15 +132,13 @@ public class TransactionServiceImpl implements TransactionService {
 			throw new IllegalStateException("Cannot remove a transaction for a foreign participant");
 		}
 		Optional<Transaction> tr = definition.getTransaction().stream().filter(t->t.getId().equals(transactionId)).findFirst();
-		if (tr.isPresent()) {
-			if (definition.getTransaction().remove(tr.get())) {
-				participantService.updateParticipantDefinition(definition);
-			}
+		if (tr.isPresent() && definition.getTransaction().remove(tr.get())) {
+			participantService.updateParticipantDefinition(definition);
 		}
 		repository.delete(toBeRemoved);
 		return true;
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see de.dim.diamant.service.api.TransactionService#createSimpleTransaction(de.dim.diamant.ParticipantDefinition, de.dim.diamant.TransactionType)
@@ -165,7 +160,7 @@ public class TransactionServiceImpl implements TransactionService {
 		participantDef.getTransaction().add(transaction);
 		return transaction;
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see de.dim.diamant.service.api.TransactionService#createAssetTransaction(de.dim.diamant.ParticipantDefinition, de.dim.diamant.AssetChangeType)
@@ -211,7 +206,7 @@ public class TransactionServiceImpl implements TransactionService {
 		participantDef.getTransaction().add(transaction);
 		return transaction;
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see de.dim.diamant.service.api.TransactionService#getTransactionsByType(java.lang.String, de.dim.diamant.TransactionType)
@@ -238,7 +233,7 @@ public class TransactionServiceImpl implements TransactionService {
 	public List<Transaction> getSharedTransactions(String participantId, TransactionType type) {
 		try {
 			QueryRepository qr = (QueryRepository) repository;
-			List<IQuery> queries = new LinkedList<IQuery>();
+			List<IQuery> queries = new LinkedList<>();
 			IQuery publicFilter = qr.createQueryBuilder().column(NotaryPackage.Literals.TRANSACTION__SHARE).simpleValue(Boolean.TRUE).build();
 			if (participantId != null) {
 				IQuery participantFilter = qr.createQueryBuilder().column(NotaryPackage.Literals.TRANSACTION__PARTICIPANT_ID).simpleValue(participantId).build();
@@ -254,15 +249,14 @@ public class TransactionServiceImpl implements TransactionService {
 				query = qr.createQueryBuilder().and(queries.toArray(new IQuery[queries.size()])).build();
 			}
 			List<EObject> transactionResult = qr.getEObjectsByQuery(NotaryPackage.Literals.TRANSACTION, query, loadOptions);
-			List<Transaction> transactions = transactionResult.stream().filter(r->r instanceof Transaction).map(r->(Transaction)r).collect(Collectors.toList());
-			return transactions;
+			return transactionResult.stream().filter(Transaction.class::isInstance).map(Transaction.class::cast).collect(Collectors.toList());
 		} catch (IllegalStateException e) {
 			throw e;
 		} catch (Exception e) {
 			throw new IllegalStateException(String.format("[%s] Cannot get transactions because of an error '%s'", participantId, e.getMessage()), e);
 		}
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see de.dim.diamant.service.api.TransactionService#getTransactionById(java.lang.String)
@@ -272,10 +266,9 @@ public class TransactionServiceImpl implements TransactionService {
 		if (transactionId ==  null) {
 			throw new IllegalStateException("Cannot get a transaction with null id");
 		}
-		Transaction transaction = repository.getEObject(NotaryPackage.Literals.TRANSACTION, transactionId, loadOptions);
-		return transaction;
+		return repository.getEObject(NotaryPackage.Literals.TRANSACTION, transactionId, loadOptions);
 	}
-	
+
 	/**
 	 * Returns the {@link Transaction} for a given {@link Participant} id and an optional type filter
 	 * @param participantId the participants id
@@ -294,8 +287,7 @@ public class TransactionServiceImpl implements TransactionService {
 			query = qr.createQueryBuilder().and(participantFilter, typeFilter).build();
 		}
 		List<EObject> transactionResult = qr.getEObjectsByQuery(NotaryPackage.Literals.TRANSACTION, query, loadOptions);
-		List<Transaction> transactions = transactionResult.stream().filter(r->r instanceof Transaction).map(r->(Transaction)r).collect(Collectors.toList());
-		return transactions;
+		return transactionResult.stream().filter(Transaction.class::isInstance).map(Transaction.class::cast).collect(Collectors.toList());
 	}
-	
+
 }

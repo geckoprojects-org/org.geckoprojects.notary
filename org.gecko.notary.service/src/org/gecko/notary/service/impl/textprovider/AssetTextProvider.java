@@ -40,6 +40,7 @@ import org.osgi.service.component.annotations.Reference;
  * @since 19.03.2020
  */
 @Component(property = {"object=Asset", "target=Asset"})
+@SuppressWarnings("java:S125")
 public class AssetTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(AssetTextProvider.class.getName());
@@ -67,11 +68,12 @@ public class AssetTextProvider implements TextProvider {
 		AssetInfo info = NotaryFactory.eINSTANCE.createAssetInfo();
 		try {
 			info.setAssetTypeLabel(getTypeLabel(asset));
-			asset.getTransactionDesc().forEach(s->info.getTransactionDesc().add(new String(s)));
+			asset.getTransactionDesc().forEach(s->info.getTransactionDesc().add(s));
 			info.setLabel(createLabel(asset));
 			info.setDescription(createDescription(asset, creator,  owner));
 			info.setAssetIdentifier(createIdentifier(asset));
 			asset.setInfo(info);
+			return info.toString();
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, String.format("[%s] Error creating asset info text", asset.getId()), e);
 		}
@@ -123,6 +125,7 @@ public class AssetTextProvider implements TextProvider {
 	 * @param participant
 	 * @return
 	 */
+	@SuppressWarnings({"java:S1172", "java:S2583"})
 	private String createDescription(Asset asset, Participant creator, Participant owner) {
 //		List<EStructuralFeature> features = new LinkedList<>();
 		String text = null;
@@ -157,6 +160,7 @@ public class AssetTextProvider implements TextProvider {
 	 * @param asset the asset to get the identifier for
 	 * @return the identifier
 	 */
+	@SuppressWarnings("java:S2583")
 	private String createIdentifier(Asset asset) {
 		List<EStructuralFeature> features = new LinkedList<>();
 		String text = "%s";
@@ -182,7 +186,7 @@ public class AssetTextProvider implements TextProvider {
 		if (template == null || entry == null) {
 			return null;
 		}
-		if (features == null || features.size() == 0) {
+		if (features == null || features.isEmpty()) {
 			return template;
 		}
 		Object[] values = features.stream()

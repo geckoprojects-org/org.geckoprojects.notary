@@ -14,6 +14,7 @@ package org.gecko.notary.service.event;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -60,29 +61,29 @@ public class TransactionEntryNotificationHandler implements EventHandler {
 			logger.info("Received an transaction notification event with a null transaction entry. This should not happen! Doing nothing");
 			return;
 		}
-		String transactionId = entry.getTransactionId();
+		AtomicReference<String> transactionId = new AtomicReference<>(entry.getTransactionId());
 		try {
 			Transaction transaction = getTransaction(entry);
 			if (transaction == null) {
-				logger.info(String.format(" [%s] Received an transaction notification event for an unknown transaction. This should not happen! Doing nothing", transactionId));
+				logger.info(()->String.format(" [%s] Received an transaction notification event for an unknown transaction. This should not happen! Doing nothing", transactionId.get()));
 				return;
 			}
 			if (transaction.getId() == null) {
-				logger.info(String.format(" [%s] Received an transaction notification event for a transaction without id. This should not happen! Doing nothing", transactionId));
+				logger.info(()->String.format(" [%s] Received an transaction notification event for a transaction without id. This should not happen! Doing nothing", transactionId.get()));
 				return;
 			}
-			if (!transaction.getId().equals(transactionId)) {
-				transactionId = transaction.getId();
+			if (!transaction.getId().equals(transactionId.get())) {
+				transactionId.set(transaction.getId());
 			}
 			String participantId = transaction.getParticipantId();
-			List<TransactionNotification> notifications = notificationService.getNotificationsByTransaction(participantId, transactionId);
+			List<TransactionNotification> notifications = notificationService.getNotificationsByTransaction(participantId, transactionId.get());
 			if (notifications == null || notifications.isEmpty()) {
-				logger.info(String.format("[%s][%s] Nothing to notify", transactionId, participantId));
+				logger.info(()->String.format("[%s][%s] Nothing to notify", transactionId.get(), participantId));
 			} else {
 				notifications.forEach(n->sendHandleNotification(n, entry));
 			}
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, String.format("[%s] Error dispatching messages", transactionId), e);
+			logger.log(Level.SEVERE, String.format("[%s] Error dispatching messages", transactionId.get()), e);
 		}
 	}
 
@@ -107,8 +108,8 @@ public class TransactionEntryNotificationHandler implements EventHandler {
 				List<Transaction> transactions = transactionService.getTransactionsByType(owner, TransactionType.ASSET);
 				if (!transactions.isEmpty()) {
 					transaction = transactions.stream()
-							.filter(t->t instanceof AssetTransaction)
-							.map(t->(AssetTransaction)t)
+							.filter(AssetTransaction.class::isInstance)
+							.map(AssetTransaction.class::cast)
 							.filter(at->at.getChangeType().equals(ate.getChangeType()))
 							.findFirst()
 							.orElse(null);
@@ -133,7 +134,7 @@ public class TransactionEntryNotificationHandler implements EventHandler {
 			logger.info("Received an transaction notification without contact reference. This should not happen! Doing nothing");
 			return;
 		}
-		Map<String, Object> eventProperties = new HashMap<String, Object>();
+		Map<String, Object> eventProperties = new HashMap<>();
 		eventProperties.put("notification", notification);
 		eventProperties.put("entry", entry);
 		Event event = new Event("notification/" + notification.getContact().getType(), eventProperties);

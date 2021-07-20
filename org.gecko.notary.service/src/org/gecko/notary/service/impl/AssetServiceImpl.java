@@ -65,8 +65,8 @@ public class AssetServiceImpl implements AssetService {
 	private EventAdmin eventAdmin;
 
 	private static final Logger logger = Logger.getLogger(AssetServiceImpl.class.getName());
-	private static Map<Object, Object> loadOptions = new HashMap<Object, Object>();
-	private static Map<Object, Object> saveOptions = new HashMap<Object, Object>();
+	private static Map<Object, Object> loadOptions = new HashMap<>();
+	private static Map<Object, Object> saveOptions = new HashMap<>();
 	
 	static {
 		loadOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.ASSET);
@@ -106,8 +106,7 @@ public class AssetServiceImpl implements AssetService {
 	 */
 	@Override
 	public List<Asset> getAssetsByParticipant(String participantId, EClass assetType) {
-		List<Asset> assets = getAssetsByFeature(NotaryPackage.Literals.ASSET__CREATOR_ID, participantId, assetType);
-		return assets;	
+		return getAssetsByFeature(NotaryPackage.Literals.ASSET__CREATOR_ID, participantId, assetType);
 	}
 	
 	/* 
@@ -143,8 +142,7 @@ public class AssetServiceImpl implements AssetService {
 	 */
 	@Override
 	public List<Asset> getAssetsByOwner(String owningParticipantId, EClass assetType) {
-		List<Asset> assets = getAssetsByFeature(NotaryPackage.Literals.ASSET__OWNER_ID, owningParticipantId, assetType);
-		return assets;	
+		return getAssetsByFeature(NotaryPackage.Literals.ASSET__OWNER_ID, owningParticipantId, assetType);
 	}
 	
 	/* 
@@ -172,14 +170,14 @@ public class AssetServiceImpl implements AssetService {
 		IQueryBuilder queryBuilder = queryRepository.createQueryBuilder(); //here we are creating the query		
 		queryBuilder.column(field).simpleValue(value);
 		IQuery query = queryBuilder.build();
-		Map<Object, Object> entryOptions = new HashMap<Object, Object>();
+		Map<Object, Object> entryOptions = new HashMap<>();
 		entryOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.TRANSACTION_ENTRY);
 		List<TransactionEntry> entries = queryRepository
 				.getEObjectsByQuery(NotaryPackage.Literals.TRANSACTION_ENTRY, query, entryOptions);
 		if (entries.isEmpty()) {
 			return Collections.emptyList();
 		}
-		Set<String> assetIds = entries.stream().filter(te->te.getAssetId() != null).map(te->te.getAssetId()).collect(Collectors.toSet());
+		Set<String> assetIds = entries.stream().filter(te->te.getAssetId() != null).map(TransactionEntry::getAssetId).collect(Collectors.toSet());
 		if (assetIds.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -227,8 +225,6 @@ public class AssetServiceImpl implements AssetService {
 		if (definition == null) {
 			throw new IllegalStateException(String.format("[%s] No participant found, cannot create the asset", participantId));
 		}
-		Map<String, Object> saveOptions = new HashMap<String, Object>();
-		saveOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.ASSET);
 		String assetId = newAsset.getId();
 		textProvider.provideText(newAsset, null);
 		if (assetId == null || current == null) {
@@ -290,7 +286,7 @@ public class AssetServiceImpl implements AssetService {
 	 * @see AssetModificationHandler
 	 */
 	private void sendAssetModification(Asset current, Asset newAsset) {
-		Map<String, Object> eventProperties = new HashMap<String, Object>();
+		Map<String, Object> eventProperties = new HashMap<>();
 		eventProperties.put("type", NotaryPackage.Literals.ASSET.getName());
 		if (current != null) {
 			eventProperties.put("current", current);
@@ -325,6 +321,6 @@ public class AssetServiceImpl implements AssetService {
 	}
 	
 	private Map<Object, Object> getSaveOptions() {
-		return new HashMap<Object, Object>(saveOptions);
+		return new HashMap<>(saveOptions);
 	}
 }

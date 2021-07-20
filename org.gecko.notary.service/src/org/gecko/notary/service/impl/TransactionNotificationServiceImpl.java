@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 import org.gecko.emf.repository.EMFRepository;
 import org.gecko.notary.model.notary.Contact;
 import org.gecko.notary.model.notary.NotaryPackage;
+import org.gecko.notary.model.notary.Notification;
 import org.gecko.notary.model.notary.ParticipantDefinition;
 import org.gecko.notary.model.notary.Transaction;
 import org.gecko.notary.model.notary.TransactionNotification;
@@ -74,17 +75,19 @@ public class TransactionNotificationServiceImpl extends BaseParticipantService i
 		if (definition == null) {
 			throw new IllegalStateException("No participant found to update the notifcation for");
 		}
-		if (notification.getContact() == null || 
-				(notification.getContact() != null && 
-				!contactId.equals(notification.getContact().getId()))) {
-			Optional<Contact> cOpt = definition.getContact().stream().filter(c->c.getId().equals(contactId)).findFirst();
-			if (cOpt.isPresent()) {
-				Contact c = cOpt.get();
-				notification.setContact(c);
-			} else {
-				throw new IllegalStateException("No contact found for the given contactId " + contactId);
-			}
-		}
+		updateNotificationContact(notification, contactId, definition);
+		updateNotificationTransaction(notification, transactionId, definition);
+		return (TransactionNotification) updateByFeature(participantId, notification, NotaryPackage.Literals.PARTICIPANT_DEFINITION__NOTIFICATION, NotaryPackage.Literals.TRANSACTION_NOTIFICATION__ID);
+	}
+
+	/**
+	 * Updates the {@link Transaction} to be set to the {@link Notification}
+	 * @param notification the notification instance
+	 * @param transactionId the transaction id to be updated
+	 * @param definition the {@link ParticipantDefinition}
+	 */
+	private void updateNotificationTransaction(TransactionNotification notification, String transactionId,
+			ParticipantDefinition definition) {
 		if (notification.getTransaction() == null || 
 				(notification.getTransaction() != null && 
 				!transactionId.equals(notification.getTransaction().getId()))) {
@@ -96,7 +99,26 @@ public class TransactionNotificationServiceImpl extends BaseParticipantService i
 				throw new IllegalStateException("No transaction found for the given transactionId " + transactionId);
 			}
 		}
-		return (TransactionNotification) updateByFeature(participantId, notification, NotaryPackage.Literals.PARTICIPANT_DEFINITION__NOTIFICATION, NotaryPackage.Literals.TRANSACTION_NOTIFICATION__ID);
+	}
+
+	/**
+	 * @param notification
+	 * @param contactId
+	 * @param definition
+	 */
+	private void updateNotificationContact(TransactionNotification notification, String contactId,
+			ParticipantDefinition definition) {
+		if (notification.getContact() == null || 
+				(notification.getContact() != null && 
+				!contactId.equals(notification.getContact().getId()))) {
+			Optional<Contact> cOpt = definition.getContact().stream().filter(c->c.getId().equals(contactId)).findFirst();
+			if (cOpt.isPresent()) {
+				Contact c = cOpt.get();
+				notification.setContact(c);
+			} else {
+				throw new IllegalStateException("No contact found for the given contactId " + contactId);
+			}
+		}
 	}
 
 	/* 

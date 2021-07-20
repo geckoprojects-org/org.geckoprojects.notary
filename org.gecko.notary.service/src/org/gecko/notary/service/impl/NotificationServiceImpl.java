@@ -44,8 +44,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	@Override
 	public List<Notification> getNotificationsBySender(String participantId) {
-		List<Notification> notifications = getNotificationsByFeature(NotaryPackage.Literals.NOTIFICATION__SENDER_ID, participantId);
-		return notifications;	
+		return getNotificationsByFeature(NotaryPackage.Literals.NOTIFICATION__SENDER_ID, participantId);
 	}
 
 	/* 
@@ -54,8 +53,7 @@ public class NotificationServiceImpl implements NotificationService {
 	 */
 	@Override
 	public List<Notification> getNotificationsByReceiver(String participantId) {
-		List<Notification> notifications = getNotificationsByFeature(NotaryPackage.Literals.NOTIFICATION__RECEIPIENT_ID, participantId);
-		return notifications;	
+		return getNotificationsByFeature(NotaryPackage.Literals.NOTIFICATION__RECEIPIENT_ID, participantId);
 	}
 
 	/* 
@@ -92,9 +90,8 @@ public class NotificationServiceImpl implements NotificationService {
 		IQueryBuilder queryBuilder = queryRepository.createQueryBuilder(); //here we are creating the query		
 		queryBuilder.column(attribute).simpleValue(value);
 		IQuery query = queryBuilder.build();
-		List<Notification> notifications = queryRepository
+		return queryRepository
 				.getEObjectsByQuery(NotaryPackage.Literals.NOTIFICATION, query);
-		return notifications;
 	}
 
 }

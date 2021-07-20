@@ -77,13 +77,13 @@ public class MessagingTransactionHandler implements EventHandler {
 	 * @return
 	 */
 	private Void sendMessage(TransactionNotification definition, TransactionEntry entry) {
-		Contact c = definition.getContact();
+		final Contact c = definition.getContact();
 		if (!ContactType.MESSAGING.equals(c.getType())) {
-			logger.log(Level.WARNING, String.format("[%s][%s] The notification definition is not of type messaging but %s. Nothing to send!", definition.getId(), entry.getId(), c.getType()));
+			logger.log(Level.WARNING, ()->String.format("[%s][%s] The notification definition is not of type messaging but %s. Nothing to send!", definition.getId(), entry.getId(), c.getType()));
 			return null;
 		}
 		if (c.getValue().isEmpty()) {
-			logger.log(Level.WARNING, String.format("[%s][%s] The notification definition does not contain a value to be used to send a message. Nothing to send!", definition.getId(), entry.getId(), c.getType()));
+			logger.log(Level.WARNING, ()->String.format("[%s][%s] The notification definition does not contain a value to be used to send a message for type %s. Nothing to send!", definition.getId(), entry.getId(), c.getType()));
 			return null;
 		}
 		String queue = c.getValue().get(0);
@@ -104,7 +104,9 @@ public class MessagingTransactionHandler implements EventHandler {
 			 */
 			MessagingContext ctx = new AMQPContextBuilder().direct().exchange(queue, transaction.getParticipantId()).build();
 			messaging.publish(queue, ByteBuffer.wrap(baos.toByteArray()), ctx);
-			logger.log(Level.INFO, String.format("[%s][%s] Sent message", entry.getId(), queue));
+			if (logger.isLoggable(Level.FINE)) {
+				logger.log(Level.FINE, String.format("[%s][%s] Sent message", entry.getId(), queue));
+			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, String.format("[%s][%s] Error sending EMail for template", entry.getParticipantId(), definition.getId()), e);
 		}

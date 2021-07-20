@@ -22,8 +22,10 @@ import org.osgi.service.component.annotations.Component;
  * Implementation for {@link TransactionEntry} provider for texts
  * @author Mark Hoffmann
  * @since 19.03.2020
+ * @no
  */
 @Component(property = {"object=TransactionEntry", "target=Asset"})
+@SuppressWarnings("java:S125")
 public class TransactionEntryAssetTextProvider implements TextProvider {
 	
 //	private static final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");

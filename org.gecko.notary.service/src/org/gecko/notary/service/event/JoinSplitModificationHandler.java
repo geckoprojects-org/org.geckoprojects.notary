@@ -41,7 +41,7 @@ public class JoinSplitModificationHandler implements EventHandler {
 	public static final String JOIN_SPLIT_TYPE = "joinSplitType";
 	public static final String JOIN_DATA = "joinData";
 	public static final String SPLIT_DATA = "splitData";
-	private static final String comment = "%s %s %s asset %s with id %s";
+	private static final String COMMENT = "%s %s %s asset %s with id %s";
 	private static final Logger logger = Logger.getLogger(JoinSplitModificationHandler.class.getName());
 	@Reference
 	private TransactionEntryService transactionEntryService;
@@ -103,7 +103,7 @@ public class JoinSplitModificationHandler implements EventHandler {
 		}
 		Asset asset = repository.getEObject(NotaryPackage.Literals.ASSET, assetId);
 		if (asset == null) {
-			logger.warning(String.format("[%s] Cannot find asset for id, which should not happen. Doing nothing", assetId));
+			logger.warning(()->String.format("[%s] Cannot find asset for id, which should not happen. Doing nothing", assetId));
 			return;
 		}
 		AssetTransactionEntry entry = NotaryFactory.eINSTANCE.createAssetTransactionEntry();
@@ -113,7 +113,7 @@ public class JoinSplitModificationHandler implements EventHandler {
 		if (AssetChangeType.JOIN.equals(type) || AssetChangeType.SPLIT.equals(type)) {
 			entry.setParentAssetId(parentAssetId);
 			String[] txt = AssetChangeType.JOIN.equals(type) ? new String[] {"Joined", "to"} : new String[] {"Removed", "from"};
-			entry.setComment(String.format(comment, txt[0], joinSplitType.getName(), txt[1], parentType.getName(), parentAssetId));
+			entry.setComment(String.format(COMMENT, txt[0], joinSplitType.getName(), txt[1], parentType.getName(), parentAssetId));
 		}
 		transactionEntryService.createTransactionEntry(assetId, joinSplitType, entry);
 		repository.detach(asset);

@@ -105,15 +105,15 @@ public class ParticipantServiceImpl implements ParticipantService {
 			}
 			String id = participant.getId();
 			if (id == null) {
-				logger.info(String.format("[%s] Save new participant without id", participant.getName()));
+				logger.info(()->String.format("[%s] Save new participant without id", participant.getName()));
 				repository.save(participant);
 			} else {
 				Participant current = getParticipant(id);
 				if (current == null) {
-					logger.info(String.format("[%s] Save new participant", participant.getId()));
+					logger.info(()->String.format("[%s] Save new participant", participant.getId()));
 					repository.save(participant);
 				} else if(!EcoreUtil.equals(current, participant)) {			
-					logger.info(String.format("[%s] Update participant because a change was detected", id));
+					logger.info(()->String.format("[%s] Update participant because a change was detected", id));
 					repository.save(participant);
 				}		
 			}
@@ -174,9 +174,9 @@ public class ParticipantServiceImpl implements ParticipantService {
 			String id = definition.getId();
 			if (id == null) {
 				definition.setId(participantId);
-				logger.info(String.format("[%s] Save new participant definition", participantId));
+				logger.info(()->String.format("[%s] Save new participant definition", participantId));
 			} else {
-				logger.info(String.format("[%s] Update participant definition because a change was detected", id));
+				logger.info(()->String.format("[%s] Update participant definition because a change was detected", id));
 			}
 			repository.save(definition);
 			return definition;
@@ -197,8 +197,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 			throw new IllegalStateException("Cannot get participant with null id");
 		}
 		try {
-			Participant participant = repository.getEObject(NotaryPackage.Literals.PARTICIPANT, participantId);
-			return participant;
+			return repository.getEObject(NotaryPackage.Literals.PARTICIPANT, participantId);
 		} catch (IllegalStateException e) {
 			throw e;
 		} catch (Exception e) {
@@ -216,8 +215,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 			throw new IllegalStateException("Cannot get participant definition with null id");
 		}
 		try {
-			ParticipantDefinition definition = repository.getEObject(NotaryPackage.Literals.PARTICIPANT_DEFINITION, participantDefinitionId);
-			return definition;
+			return repository.getEObject(NotaryPackage.Literals.PARTICIPANT_DEFINITION, participantDefinitionId);
 		} catch (IllegalStateException e) {
 			throw e;
 		} catch (Exception e) {
@@ -236,12 +234,12 @@ public class ParticipantServiceImpl implements ParticipantService {
 			return null;
 		}
 		if (asset == null) {
-			logger.warning(String.format("[%s] Cannot add a null asset for this participant", participantDefinitionId));
+			logger.warning(()->String.format("[%s] Cannot add a null asset for this participant", participantDefinitionId));
 			return participant;
 		}
 		List<Asset> assets = Collections.synchronizedList(participant.getAsset());
 		synchronized (participant.getAsset()) {
-			if (!assets.stream().anyMatch(a->asset.getId().equals(a.getId()))) {
+			if (assets.stream().noneMatch(a->asset.getId().equals(a.getId()))) {
 				participant.getAsset().add(asset);
 				updateParticipantDefinition(participant);
 			}
@@ -260,7 +258,7 @@ public class ParticipantServiceImpl implements ParticipantService {
 		IQuery nameQuery = qb.column(NotaryPackage.Literals.PARTICIPANT__NAME).simpleValue(name).build();
 		Participant participant = qr.getEObjectByQuery(NotaryPackage.Literals.PARTICIPANT, nameQuery, null);
 		if (participant == null) {
-			logger.log(Level.INFO, String.format("[%s] No participant found", name));
+			logger.log(Level.INFO, ()->String.format("[%s] No participant found", name));
 			return null;
 		} else {
 			ParticipantDefinition participantDef = repository.getEObject(NotaryPackage.Literals.PARTICIPANT_DEFINITION, participant.getId());

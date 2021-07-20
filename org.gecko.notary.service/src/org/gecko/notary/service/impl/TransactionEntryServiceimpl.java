@@ -63,9 +63,9 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 	@Reference
 	private EventAdmin eventAdmin;
 
-	private static Map<Object, Object> loadOptions = new HashMap<Object, Object>();
-	private static Map<Object, Object> saveOptions = new HashMap<Object, Object>();	
-	private static Map<Object, Object> assetSaveOptions = new HashMap<Object, Object>();
+	private static Map<Object, Object> loadOptions = new HashMap<>();
+	private static Map<Object, Object> saveOptions = new HashMap<>();	
+	private static Map<Object, Object> assetSaveOptions = new HashMap<>();
 
 	static {
 		loadOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.TRANSACTION_ENTRY);
@@ -108,8 +108,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 		}
 		IQuery query = queryBuilder.sort(NotaryPackage.Literals.TRANSACTION_ENTRY__TIMESTAMP, SortType.DESCENDING).build();
 		List<EObject> transactionResult = qr.getEObjectsByQuery(NotaryPackage.Literals.TRANSACTION_ENTRY, query, loadOptions);
-		List<TransactionEntry> transactions = transactionResult.stream().filter(r->r instanceof TransactionEntry).map(r->(TransactionEntry)r).collect(Collectors.toList());
-		return transactions;
+		return transactionResult.stream().filter(TransactionEntry.class::isInstance).map(TransactionEntry.class::cast).collect(Collectors.toList());
 	}
 
 	/* 
@@ -148,7 +147,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 		if (currentAsset == null) {
 			entry.setChangeType(AssetChangeType.CREATION);
 			entry.setComment(String.format("Created asset of type %s with id %s", newAsset.eClass().getName(), logId));
-		} else if (currentAsset != null) {
+		} else {
 			if (!currentAsset.isInactive() && newAsset.isInactive()) {
 				entry.setChangeType(AssetChangeType.DESTRUCTION);
 				entry.setComment(String.format("Removed asset of type %s with id %s", newAsset.eClass().getName(), logId));
@@ -227,7 +226,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 	 * @param entry the {@link TransactionEntry} to be handled
 	 */
 	private void sendTransactionNotification(AssetLog assetLog, TransactionEntry entry) {
-		Map<String, Object> eventProperties = new HashMap<String, Object>();
+		Map<String, Object> eventProperties = new HashMap<>();
 		eventProperties.put("type", NotaryPackage.Literals.TRANSACTION_ENTRY.getName());
 		eventProperties.put("assetLog", assetLog);
 		eventProperties.put("entry", entry);
@@ -287,7 +286,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 				assetLog.setAssetId(expectedAssetId);
 			}
 			if (!asset.getId().equals(expectedAssetId)) {
-				logger.warning(String.format("[%s] Asset log has an asset id set, that is not of this asset. Setting correct asset id", expectedAssetId));
+				logger.warning(()->String.format("[%s] Asset log has an asset id set, that is not of this asset. Setting correct asset id", expectedAssetId));
 				assetLog.setAssetId(asset.getId());
 			}
 		}
@@ -303,18 +302,18 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 	 * @return the resolved {@link Asset}
 	 */
 	private Asset resolveAsset(String expectedAssetId, Asset asset, EClass assetType) {
-		Map<Object, Object> loadOptions = new HashMap<Object, Object>();
-		loadOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.ASSET);
+		Map<Object, Object> assetLoadOptions = new HashMap<>();
+		assetLoadOptions.put(Options.OPTION_COLLECTION_NAME, NotaryPackage.Literals.ASSET);
 		if (asset == null) {
-			logger.warning(String.format("[%s] Asset log has no asset assigned, try to resolve it", expectedAssetId));
-			asset = repository.getEObject(assetType, expectedAssetId, loadOptions);
+			logger.warning(()->String.format("[%s] Asset log has no asset assigned, try to resolve it", expectedAssetId));
+			asset = repository.getEObject(assetType, expectedAssetId, assetLoadOptions);
 			if (asset == null) {
 				throw new IllegalStateException(String.format("[%s] Error getting asset for an unknown asset of type '%s'", expectedAssetId, assetType.getName()));
 			} 
 		}
 		if (!asset.getId().equals(expectedAssetId)) {
-			logger.warning(String.format("[%s] Given expected assetIs is different to the id of the given asset", expectedAssetId));
-			asset = repository.getEObject(assetType, expectedAssetId, loadOptions);
+			logger.warning(()->String.format("[%s] Given expected assetIs is different to the id of the given asset", expectedAssetId));
+			asset = repository.getEObject(assetType, expectedAssetId, assetLoadOptions);
 			if (asset == null) {
 				throw new IllegalStateException(String.format("[%s] Error getting asset for an unknown asset of type '%s'", expectedAssetId, assetType.getName()));
 			} 
@@ -355,7 +354,7 @@ public class TransactionEntryServiceimpl implements TransactionEntryService {
 	}
 
 	private Map<Object, Object> getSaveOptions() {
-		return new HashMap<Object, Object>(saveOptions);
+		return new HashMap<>(saveOptions);
 	}
 
 }
