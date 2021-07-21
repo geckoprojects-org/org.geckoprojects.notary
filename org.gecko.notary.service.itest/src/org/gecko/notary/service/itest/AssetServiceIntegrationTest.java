@@ -479,6 +479,12 @@ public class AssetServiceIntegrationTest {
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
 			assetService.searchAsset(null, null, null);
 		});
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAsset(NotaryPackage.Literals.ASSET__CREATOR_ID, null, null);
+		});
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAsset(null, "test", null);
+		});
 	}
 	
 	@Test
@@ -487,6 +493,12 @@ public class AssetServiceIntegrationTest {
 		assertNotNull(assetService);
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
 			assetService.searchAsset(null, null, NotaryPackage.Literals.ASSET);
+		});
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAsset(NotaryPackage.Literals.ASSET__CREATOR_ID, null, NotaryPackage.Literals.ASSET);
+		});
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.searchAsset(null, "test", NotaryPackage.Literals.ASSET);
 		});
 	}
 	
@@ -666,7 +678,7 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByOwner_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+	public void testGetAssetsByOwner_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
 		assertNotNull(repository);
 		assertNotNull(assetService);
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
@@ -675,7 +687,7 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByOwner_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+	public void testGetAssetsByOwner_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
 		assertNotNull(repository);
 		assertNotNull(assetService);
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
@@ -684,7 +696,7 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByOwner_Result(@InjectService AssetService assetService, 
+	public void testGetAssetsByOwner_Result(@InjectService AssetService assetService, 
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);
@@ -718,7 +730,7 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByOwner_ResultDefaultType(@InjectService AssetService assetService, 
+	public void testGetAssetsByOwner_ResultDefaultType(@InjectService AssetService assetService, 
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);
@@ -754,11 +766,11 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByParticipant_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+	public void testGetAssetByParticipant_NoIdOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
 		assertNotNull(repository);
 		assertNotNull(assetService);
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
-			assetService.getAssetsByParticipant(null, null);
+			assetService.getAssetByParticipant(null, null, null);
 		});
 	}
 	
@@ -767,12 +779,161 @@ public class AssetServiceIntegrationTest {
 		assertNotNull(repository);
 		assertNotNull(assetService);
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByParticipant("test", null, NotaryPackage.Literals.ASSET);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_NoType(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(null);
+		assertNull(assetService.getAssetByParticipant("test", "user", null));
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_WrongParticipant1(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByParticipant("test", "user", NotaryPackage.Literals.ASSET);
+		});
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByParticipant_WrongParticipant2(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		asset.setCreatorId("knut");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByParticipant("test", "user", NotaryPackage.Literals.ASSET);
+		});
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByParticipant(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		asset.setCreatorId("user");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertEquals(asset, assetService.getAssetByParticipant("test", "user", NotaryPackage.Literals.ASSET));
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	
+	@Test
+	public void testGetAssetByOwner_NoIdNoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByOwner(null, null, null);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByOwner_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByOwner("test", null, NotaryPackage.Literals.ASSET);
+		});
+	}
+	
+	@Test
+	public void testGetAssetByOwner_NoType(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(null);
+		assertNull(assetService.getAssetByOwner("test", "user", null));
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByOwner_WrongParticipant1(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByOwner("test", "user", NotaryPackage.Literals.ASSET);
+		});
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByOwner_WrongOwner2(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		asset.setOwnerId("knut");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetByOwner("test", "user", NotaryPackage.Literals.ASSET);
+		});
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetByOwner(@InjectService AssetService assetService, 
+			@InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		Asset asset = NotaryFactory.eINSTANCE.createAsset();
+		asset.setId("test");
+		asset.setOwnerId("user");
+		ArgumentCaptor<EClass> ecC = ArgumentCaptor.forClass(EClass.class);
+		Mockito.when(repository.getEObject(ecC.capture(), Mockito.any(String.class), Mockito.anyMap())).thenReturn(asset);
+		assertEquals(asset, assetService.getAssetByOwner("test", "user", NotaryPackage.Literals.ASSET));
+		assertEquals(ecC.getValue(), NotaryPackage.Literals.ASSET);
+	}
+	
+	@Test
+	public void testGetAssetsByParticipant_NoOwnerNoType(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
+			assetService.getAssetsByParticipant(null, null);
+		});
+	}
+	
+	@Test
+	public void testGetAssetsByParticipant_NoOwner(@InjectService AssetService assetService, @InjectService EMFRepository repository) {
+		assertNotNull(repository);
+		assertNotNull(assetService);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
 			assetService.getAssetsByParticipant(null, NotaryPackage.Literals.ASSET);
 		});
 	}
 	
 	@Test
-	public void testGetAssetByParticipant_Result(@InjectService AssetService assetService,
+	public void testGetAssetsByParticipant_Result(@InjectService AssetService assetService,
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);
@@ -806,7 +967,7 @@ public class AssetServiceIntegrationTest {
 	}
 	
 	@Test
-	public void testGetAssetByParticipant_ResultDefaultType(@InjectService AssetService assetService,
+	public void testGetAssetsByParticipant_ResultDefaultType(@InjectService AssetService assetService,
 			@InjectService TextProvider textProvider,
 			@InjectService EMFRepository repository) {
 		assertNotNull(repository);

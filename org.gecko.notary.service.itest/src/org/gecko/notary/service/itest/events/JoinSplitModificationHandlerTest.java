@@ -106,52 +106,98 @@ public class JoinSplitModificationHandlerTest {
 		assertThat(notificationHandlerAware.getServices()).hasSize(1);
 
 		Map<String, Object> eventProps = new HashMap<String, Object>();
+		EventHandler notificationHandler = notificationHandlerAware.getService();
+		eventProps = new HashMap<String, Object>();
+		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
+		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
+		eventProps.put("parentAssetId", "treatmelikeagood");
+		eventProps.put("splitData", new ArrayList<String>());
+		notificationHandler.handleEvent(new Event("test", eventProps));
+		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
+		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
+		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
+
+		eventProps = new HashMap<String, Object>();
+		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
+		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
+		eventProps.put("parentAssetId", "treatmelikeagood");
+		eventProps.put("joinData", new ArrayList<String>());
+		notificationHandler.handleEvent(new Event("test", eventProps));
+		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
+		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
+		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
+	}
+	
+	@Test
+	public void testJoinSplit_AssetIdNull(@InjectService(filter = "(component.name=JoinSplitTransactionEntryWorker)")ServiceAware<EventHandler> notificationHandlerAware, 
+			@InjectService(service = EMFRepository.class) EMFRepository repository,
+			@InjectService(service = TransactionEntryService.class) TransactionEntryService entryService) {
+		assertThat(notificationHandlerAware.getServices()).hasSize(1);
+		
+		Map<String, Object> eventProps = new HashMap<String, Object>();
+		EventHandler notificationHandler = notificationHandlerAware.getService();
+		
+		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
+		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
+		eventProps.put("joinData", new ArrayList<String>());
+		eventProps.put("splitData", new ArrayList<String>());
+		notificationHandler.handleEvent(new Event("test", eventProps));
+		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
+		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
+		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
+	}
+	
+	@Test
+	public void testJoinSplit_JoinSplitTypeNull(@InjectService(filter = "(component.name=JoinSplitTransactionEntryWorker)")ServiceAware<EventHandler> notificationHandlerAware, 
+			@InjectService(service = EMFRepository.class) EMFRepository repository,
+			@InjectService(service = TransactionEntryService.class) TransactionEntryService entryService) {
+		assertThat(notificationHandlerAware.getServices()).hasSize(1);
+		
+		Map<String, Object> eventProps = new HashMap<String, Object>();
 		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
 		eventProps.put("parentAssetId", "treatmelikeagood");
 		eventProps.put("joinData", new ArrayList<String>());
 		eventProps.put("splitData", new ArrayList<String>());
-
+		
 		EventHandler notificationHandler = notificationHandlerAware.getService();
 		notificationHandler.handleEvent(new Event("test", eventProps));
 		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
 		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
 		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
-
+		
+	}
+	
+	@Test
+	public void testJoinSplit_ParentAssetIdNull(@InjectService(filter = "(component.name=JoinSplitTransactionEntryWorker)")ServiceAware<EventHandler> notificationHandlerAware, 
+			@InjectService(service = EMFRepository.class) EMFRepository repository,
+			@InjectService(service = TransactionEntryService.class) TransactionEntryService entryService) {
+		assertThat(notificationHandlerAware.getServices()).hasSize(1);
+		
+		Map<String, Object> eventProps = new HashMap<String, Object>();
+		EventHandler notificationHandler = notificationHandlerAware.getService();
+		
 		eventProps = new HashMap<String, Object>();
 		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
-		eventProps.put("parentAssetId", "treatmelikeagood");
+		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
 		eventProps.put("joinData", new ArrayList<String>());
 		eventProps.put("splitData", new ArrayList<String>());
 		notificationHandler.handleEvent(new Event("test", eventProps));
 		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
 		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
 		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
-
-		eventProps = new HashMap<String, Object>();
+	}
+	
+	@Test
+	public void testJoinSplit_ParentTypeNull(@InjectService(filter = "(component.name=JoinSplitTransactionEntryWorker)")ServiceAware<EventHandler> notificationHandlerAware, 
+			@InjectService(service = EMFRepository.class) EMFRepository repository,
+			@InjectService(service = TransactionEntryService.class) TransactionEntryService entryService) {
+		assertThat(notificationHandlerAware.getServices()).hasSize(1);
+		EventHandler notificationHandler = notificationHandlerAware.getService();
+		Map<String, Object> eventProps = new HashMap<String, Object>();
 		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
-		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
-		eventProps.put("joinData", new ArrayList<String>());
-		eventProps.put("splitData", new ArrayList<String>());
-		notificationHandler.handleEvent(new Event("test", eventProps));
-		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
-		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
-		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
-
-		eventProps = new HashMap<String, Object>();
-		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
-		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
-		eventProps.put("parentAssetId", "treatmelikeagood");
-		eventProps.put("splitData", new ArrayList<String>());
-		notificationHandler.handleEvent(new Event("test", eventProps));
-		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
-		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
-		Mockito.verify(repository, Mockito.never()).detach(Mockito.any(EObject.class));
-
-		eventProps = new HashMap<String, Object>();
-		eventProps.put("joinSplitType", NotaryPackage.Literals.ASSET);
-		eventProps.put("parentAssetType", NotaryPackage.Literals.ASSET);
 		eventProps.put("parentAssetId", "treatmelikeagood");
 		eventProps.put("joinData", new ArrayList<String>());
+		eventProps.put("splitData", new ArrayList<String>());
 		notificationHandler.handleEvent(new Event("test", eventProps));
 		Mockito.verify(entryService, Mockito.never()).createTransactionEntry(Mockito.anyString(), Mockito.any(EClass.class), Mockito.any(TransactionEntry.class));
 		Mockito.verify(repository, Mockito.never()).getEObject(Mockito.any(EClass.class), Mockito.anyString());
