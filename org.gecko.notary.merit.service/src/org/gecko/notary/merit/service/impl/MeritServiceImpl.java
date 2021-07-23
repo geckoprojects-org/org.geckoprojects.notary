@@ -128,6 +128,9 @@ public class MeritServiceImpl implements MeritService {
 		}
 		// Just checking for a valid badge, otherwise we exit here
 		Badge badge = getBadge(userId);
+		if (amount > badge.getMeritPoints()) {
+			throw new IllegalStateException("You dont have enough merit points to place a bet.");
+		}
 		if (amount == 0) {
 			LOGGER.warning("Placing a bet with an amount of 0 makes no sense");
 			return badge;
@@ -161,6 +164,11 @@ public class MeritServiceImpl implements MeritService {
 		if (amount == 0) {
 			return badge;
 		}
+		Badge copy = EcoreUtil.copy(badge);
+		int merits = copy.getMeritPoints();
+		if (amount > merits) {
+			throw new IllegalStateException("The user cannot lose more points than he has. Also betting more that you have is also not possible. Something is really wrong here");
+		}
 		BettingEntry be = MeritFactory.eINSTANCE.createBettingEntry();
 		be.setAssetId(userId);
 		be.setParticipantId(userId);
@@ -169,16 +177,19 @@ public class MeritServiceImpl implements MeritService {
 		switch (result) {
 		case WIN:
 			be.setStake(amount);
+			merits += amount;
 			break;
 		case LOSE:
 			be.setStake(amount * -1);
+			merits -= amount;
 			break;
 		default:
 			be.setStake(0);
 			break;
 		}
+		copy.setMeritPoints(merits);
 		transactionEntryService.createTransactionEntry(userId, MeritPackage.Literals.BADGE, be);
-		return badge;
+		return (Badge) assetService.updateAsset(copy);
 	}
 	
 	/**

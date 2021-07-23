@@ -384,6 +384,19 @@ public class MeritServiceTest {
 	}
 	
 	@Test
+	public void testPlaceBet_NotEnoughMerits(@InjectService AssetService assetService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		Badge b = MeritFactory.eINSTANCE.createBadge();
+		b.setId("user");
+		b.setMeritPoints(90);
+		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> meritService.placeBet("user", "bet", 100));
+		verify(assetService, times(1)).getAssetByParticipant(any(), any(), any(EClass.class));
+	}
+	
+	@Test
 	public void testPlaceBet_ZeroAmount(@InjectService AssetService assetService,
 			@InjectService TransactionEntryService transactionEntryService,
 			@InjectService MeritService meritService) {
@@ -412,6 +425,7 @@ public class MeritServiceTest {
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		ArgumentCaptor<BettingEntry> beC = ArgumentCaptor.forClass(BettingEntry.class);
@@ -439,6 +453,7 @@ public class MeritServiceTest {
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any())).thenThrow(IllegalStateException.class);
 		
@@ -502,6 +517,7 @@ public class MeritServiceTest {
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any())).thenReturn(null);
@@ -516,22 +532,28 @@ public class MeritServiceTest {
 	}
 	
 	@Test
-	public void testPlaceBet_SuccessWin(@InjectService AssetService assetService,
+	public void testSetBetResult_SuccessWin(@InjectService AssetService assetService,
 			@InjectService TransactionEntryService transactionEntryService,
 			@InjectService MeritService meritService) {
 		assertNotNull(assetService);
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		ArgumentCaptor<BettingEntry> beC = ArgumentCaptor.forClass(BettingEntry.class);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), beC.capture())).thenReturn(null);
+		ArgumentCaptor<Badge> badgeC = ArgumentCaptor.forClass(Badge.class);
+		when(assetService.updateAsset(badgeC.capture())).thenReturn(b);
 		
 		Badge returned = meritService.setBetResult("user", "bet", 10, BetResultType.WIN); 
 		assertNotNull(returned);
 		assertEquals(b, returned);
 		assertEquals(amount, returned.getMeritPoints());
+		
+		Badge updated = badgeC.getValue();
+		assertEquals(amount + 10, updated.getMeritPoints());
 		
 		BettingEntry entry = beC.getValue();
 		assertNotNull(entry);
@@ -543,22 +565,28 @@ public class MeritServiceTest {
 	}
 	
 	@Test
-	public void testPlaceBet_SuccessLoseWin(@InjectService AssetService assetService,
+	public void testSetBetResult_SuccessLose(@InjectService AssetService assetService,
 			@InjectService TransactionEntryService transactionEntryService,
 			@InjectService MeritService meritService) {
 		assertNotNull(assetService);
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		ArgumentCaptor<BettingEntry> beC = ArgumentCaptor.forClass(BettingEntry.class);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), beC.capture())).thenReturn(null);
+		ArgumentCaptor<Badge> badgeC = ArgumentCaptor.forClass(Badge.class);
+		when(assetService.updateAsset(badgeC.capture())).thenReturn(b);
 		
 		Badge returned = meritService.setBetResult("user", "bet", 10, BetResultType.LOSE); 
 		assertNotNull(returned);
 		assertEquals(b, returned);
 		assertEquals(amount, returned.getMeritPoints());
+		
+		Badge updated = badgeC.getValue();
+		assertEquals(amount - 10, updated.getMeritPoints());
 		
 		BettingEntry entry = beC.getValue();
 		assertNotNull(entry);
@@ -567,25 +595,52 @@ public class MeritServiceTest {
 		assertEquals("bet", entry.getBetIdentifier());
 		verify(assetService, times(1)).getAssetByParticipant(eq("user"), eq("user"), any(EClass.class));
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
+		verify(assetService, times(1)).updateAsset(any());
 	}
 	
 	@Test
-	public void testPlaceBet_SuccessLoseTie(@InjectService AssetService assetService,
+	public void testSetBetResult_SuccessLoseMoreThanYouHave(@InjectService AssetService assetService,
 			@InjectService TransactionEntryService transactionEntryService,
 			@InjectService MeritService meritService) {
 		assertNotNull(assetService);
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(10);
+		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
+		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any())).thenReturn(null);
+		when(assetService.updateAsset(any())).thenReturn(b);
+		
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> meritService.setBetResult("user", "bet", 20, BetResultType.LOSE)); 
+		
+		verify(assetService, times(1)).getAssetByParticipant(eq("user"), eq("user"), any(EClass.class));
+		verify(transactionEntryService, never()).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
+		verify(assetService, never()).updateAsset(any());
+	}
+	
+	@Test
+	public void testSetBetResult_SuccessTie(@InjectService AssetService assetService,
+			@InjectService TransactionEntryService transactionEntryService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		Badge b = MeritFactory.eINSTANCE.createBadge();
+		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		ArgumentCaptor<BettingEntry> beC = ArgumentCaptor.forClass(BettingEntry.class);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), beC.capture())).thenReturn(null);
+		ArgumentCaptor<Badge> badgeC = ArgumentCaptor.forClass(Badge.class);
+		when(assetService.updateAsset(badgeC.capture())).thenReturn(b);
 		
 		Badge returned = meritService.setBetResult("user", "bet", 10, BetResultType.TIE); 
 		assertNotNull(returned);
 		assertEquals(b, returned);
 		assertEquals(amount, returned.getMeritPoints());
+		
+		Badge updated = badgeC.getValue();
+		assertEquals(amount, updated.getMeritPoints());
 		
 		BettingEntry entry = beC.getValue();
 		assertNotNull(entry);
@@ -594,20 +649,24 @@ public class MeritServiceTest {
 		assertEquals("bet", entry.getBetIdentifier());
 		verify(assetService, times(1)).getAssetByParticipant(eq("user"), eq("user"), any(EClass.class));
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
+		verify(assetService, times(1)).updateAsset(any());
 	}
 	
 	@Test
-	public void testPlaceBet_SuccessLoseCancel(@InjectService AssetService assetService,
+	public void testSetBetResult_SuccessCancel(@InjectService AssetService assetService,
 			@InjectService TransactionEntryService transactionEntryService,
 			@InjectService MeritService meritService) {
 		assertNotNull(assetService);
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		int amount = b.getMeritPoints();
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		ArgumentCaptor<BettingEntry> beC = ArgumentCaptor.forClass(BettingEntry.class);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), beC.capture())).thenReturn(null);
+		ArgumentCaptor<Badge> badgeC = ArgumentCaptor.forClass(Badge.class);
+		when(assetService.updateAsset(badgeC.capture())).thenReturn(b);
 		
 		Badge returned = meritService.setBetResult("user", "bet", 10, BetResultType.CANCEL); 
 		assertNotNull(returned);
@@ -619,8 +678,14 @@ public class MeritServiceTest {
 		assertEquals(BetResultType.CANCEL, entry.getResult());
 		assertEquals(0, entry.getStake());
 		assertEquals("bet", entry.getBetIdentifier());
+		
+		Badge updated = badgeC.getValue();
+		assertEquals(amount, updated.getMeritPoints());
+		
 		verify(assetService, times(1)).getAssetByParticipant(eq("user"), eq("user"), any(EClass.class));
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
+		verify(assetService, times(1)).updateAsset(any());
+		verify(assetService, times(1)).updateAsset(any());
 	}
 	
 	@Test
@@ -631,13 +696,16 @@ public class MeritServiceTest {
 		assertNotNull(meritService);
 		Badge b = MeritFactory.eINSTANCE.createBadge();
 		b.setId("user");
+		b.setMeritPoints(200);
 		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
 		when(transactionEntryService.createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any())).thenThrow(IllegalStateException.class);
+		when(assetService.updateAsset(any())).thenThrow(IllegalStateException.class);
 		
 		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> meritService.setBetResult("user", "bet", 100, BetResultType.WIN)); 
 		
 		verify(assetService, times(1)).getAssetByParticipant(eq("user"), eq("user"), any(EClass.class));
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
+		verify(assetService, never()).updateAsset(any());
 	}
 	
 }

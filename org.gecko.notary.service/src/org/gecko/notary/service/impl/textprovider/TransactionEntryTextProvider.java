@@ -85,7 +85,7 @@ public class TransactionEntryTextProvider implements TextProvider {
 			}
 			te.setSource(source);
 		}
-		String comment = createComment(te, p);
+		String comment = createComment(te);
 		if (comment != null)
 			te.setComment(comment);
 		return comment;
@@ -94,10 +94,9 @@ public class TransactionEntryTextProvider implements TextProvider {
 	/**
 	 * Creates a comment for a certain {@link TransactionEntry}
 	 * @param entry the 
-	 * @param participant
 	 * @return
 	 */
-	private String createComment(TransactionEntry entry, Participant participant) {
+	private String createComment(TransactionEntry entry) {
 		List<EStructuralFeature> features = new LinkedList<>();
 		String text = null;
 		if (entry instanceof ParentAssetEntry) {
