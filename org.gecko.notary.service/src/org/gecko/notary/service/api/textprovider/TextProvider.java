@@ -25,27 +25,16 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface TextProvider {
 	
 	public static final String ASSET_LABEL_TEMPLATE = "Asset: '%s', Creator: %s, Owner: %s";
-	public static final String PRODUCT_LABEL_TEMPLATE = "Produkt: '%s', Typ: %s, Hersteller: %s";
-	public static final String PRODUCT_DESCRIPTION_TEMPLATE = "Artikelnummer: %s, Seriennummer: %s, Ersteller: ${CREATOR}, Besitzer: ${OWNER}";
-	public static final String TREATMENT_LABEL_TEMPLATE = "Behandlung: '%s', Versicherungsnummer: %s";
-	public static final String TREATMENT_DESCRIPTION_TEMPLATE = "Beschreibung: %s, Ort: %s, Instanz: ${CREATOR}";
-	public static final String SUPPORT_CASE_LABEL_TEMPLATE = "Betreff: '%s', Produkt: %s";
-	public static final String SUPPORT_CASE_DESCRIPTION_TEMPLATE = "Kontakt: %s, Beschreibung: %s, Status: %s, Zugewiesen: ${OWNER}";
+	public static final String ASSET_DESCRIPTION_TEMPLATE = "Asset: '%s', Creator: ${CREATOR}, Owner: ${OWNER}";
 	
-	public static final String OUTBOUND_TEMPLATE = "Warensendung nach %s, mittels Dienstleister %s (TrackingNo: %s, Asset: %s)";
-	public static final String INBOUND_TEMPLATE = "Eingangsbuchung auf Artikelnummer %s (%s)";
-	public static final String GAUGE_TEMPLATE = "Eichung durch %s (Zertifikat '%s' gültig bis %s";
-	public static final String SUPPORT_ACTION_TEMPLATE = "%s (Aktivität: %s)";
-	public static final String SUPPORT_NOACTION_TEMPLATE = "%s";
-	public static final String SELLING_TEMPLATE = "Kunde: %s, Vertragsnummer %s, Details: %s (Asset: %s)";
-	public static final String PARENT_TEMLPATE = "Asset %s wurde an Asset %s gehängt";
-	public static final String CREATION_TEMLPATE = "Das Asset %s vom Typ %s wurde erstellt";
-	public static final String JOIN_TEMPLATE = "Das Asset %s vom Typ %s wurde dem Asset %s zugeordnet";
-	public static final String SPLIT_TEMPLATE = "Das Asset %s vom Typ %s vom Asset %s gelöst";
-	public static final String MODIFICATON_TEMPLATE = "Der Besitzer von Asset %s vom Typ %s wurde geändert";
-	public static final String OWNERSHIP_TEMPLATE = "Der Besitzer des Asset %s vom Typ %s wurde von '%s' auf '%s'";
-	public static final String DESTRUCTION_TEMLPATE = "Das Asset %s vom Typ %s wurde gelöscht";
-	public static final String ASSET_DEFAULT_LABEL = "Asset Veränderung";
+	public static final String PARENT_TEMLPATE = "Asset %s has been attached to asset %s";
+	public static final String CREATION_TEMLPATE = "Asset %s of type %s has been created";
+	public static final String JOIN_TEMPLATE = "Asset %s of type %s has been assigned to parental asset %s";
+	public static final String SPLIT_TEMPLATE = "Asset %s of type %s has been detached from asset %s";
+	public static final String MODIFICATON_TEMPLATE = "The asset %s of type %s has been modified";
+	public static final String OWNERSHIP_TEMPLATE = "The owner of asset %s of type %s has changed from '%s' to '%s'";
+	public static final String DESTRUCTION_TEMLPATE = "The asset %s of type %s has been destructed";
+	public static final String ASSET_DEFAULT_LABEL = "Asset Change";
 	
 	/**
 	 * Provide the text for the given object and properties

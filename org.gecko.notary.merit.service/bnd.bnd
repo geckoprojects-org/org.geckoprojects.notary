@@ -1,0 +1,14 @@
+-buildpath: \
+	osgi.annotation;version='7.0',\
+	osgi.cmpn;version='7.0',\
+	org.gecko.notary.merit.model;version=project,\
+	org.gecko.notary.model;version=project,\
+	org.gecko.notary.service.api;version=latest,\
+	org.eclipse.emf.ecore,\
+	org.eclipse.emf.ecore.xmi,\
+	org.eclipse.emf.common
+
+Bundle-Version: ${notaryVersion}
+Private-Package: org.gecko.notary.merit.service
+Export-Package: org.gecko.notary.merit.service.api
+-privatepackage: org.gecko.notary.merit.service.impl

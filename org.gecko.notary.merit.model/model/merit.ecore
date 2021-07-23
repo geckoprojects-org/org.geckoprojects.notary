@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="merit" nsURI="http://geckoprojects.io/merit/1.0" nsPrefix="merit">
+  <eClassifiers xsi:type="ecore:EClass" name="Badge" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//Asset">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="meritPoints" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt" defaultValueLiteral="0"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Purchase" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//Transaction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Achievement" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//Transaction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Bet" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//Transaction"/>
+  <eClassifiers xsi:type="ecore:EClass" name="PurchaseEntry" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//TransactionEntry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="amount" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="0"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="purchaseProvider" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="purchaseTransactionId"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="purchaseTime" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="AchievementEntry" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//TransactionEntry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="description" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="meritAmount" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="BettingEntry" eSuperTypes="../../org.gecko.notary.model/model/notary.ecore#//TransactionEntry">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="result" eType="#//BetResultType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="stake" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"
+        defaultValueLiteral="5"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="betIdentifier" lowerBound="1"
+        eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="BetResultType">
+    <eLiterals name="INITIAL_BET" value="4"/>
+    <eLiterals name="WIN"/>
+    <eLiterals name="LOSE" value="1"/>
+    <eLiterals name="TIE" value="2"/>
+    <eLiterals name="CANCEL" value="3"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="PurchaseProvider">
+    <eLiterals name="OTHER"/>
+    <eLiterals name="GOOGLE" value="1"/>
+    <eLiterals name="APPLE" value="2"/>
+  </eClassifiers>
+</ecore:EPackage>
