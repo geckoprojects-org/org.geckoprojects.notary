@@ -18,6 +18,7 @@
 	org.gecko.notary.model;version=latest,\
 	org.gecko.notary.service.api;version=latest,\
 	org.eclipse.emf.ecore;version=latest,\
+	org.eclipse.emf.common;version=latest,\
 	org.eclipse.emf.ecore.xmi;version=latest
 	
 # Sometimes without DynamicImport Mockito will not find certain classes
