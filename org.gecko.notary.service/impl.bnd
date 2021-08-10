@@ -1,8 +1,8 @@
 
 -privatepackage: \
 	org.gecko.notary.service.event,\
-	org.gecko.notary.service.impl,\
-	org.gecko.notary.service.impl.textprovider
+	org.gecko.notary.service.impl
 Export-Package: \
 	org.gecko.notary.service.api,\
-	org.gecko.notary.service.api.textprovider
+	org.gecko.notary.service.api.textprovider,\
+	org.gecko.notary.service.impl.textprovider
