@@ -13,7 +13,9 @@ package org.gecko.notary.merit.service.itest;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -707,5 +709,54 @@ public class MeritServiceTest {
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
 		verify(assetService, never()).updateAsset(any());
 	}
+	/*
+	 * ----------------------------------
+	 * TEST MeritService#validateBadge 
+	 * ----------------------------------
+	 */
 	
+	@Test
+	public void testValidateBadge_NullUser(@InjectService AssetService assetService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> meritService.validateBadge(null, 10));
+		verify(assetService, never()).getAssetByParticipant(any(), any(), any(EClass.class));
+	}
+	
+	@Test
+	public void testValidateBadge_NegativeAmount(@InjectService AssetService assetService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		
+		assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> meritService.validateBadge("user", -10));
+	}
+	
+	@Test
+	public void testValidateBadge_NotEnoughMerits(@InjectService AssetService assetService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		Badge b = MeritFactory.eINSTANCE.createBadge();
+		b.setId("user");
+		b.setMeritPoints(90);
+		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
+		assertFalse(meritService.validateBadge("user", 100));
+		verify(assetService, times(1)).getAssetByParticipant(any(), any(), any(EClass.class));
+	}
+	
+	@Test
+	public void testValidateBadge_EnoughMerits(@InjectService AssetService assetService,
+			@InjectService MeritService meritService) {
+		assertNotNull(assetService);
+		assertNotNull(meritService);
+		Badge b = MeritFactory.eINSTANCE.createBadge();
+		b.setId("user");
+		b.setMeritPoints(90);
+		when(assetService.getAssetByParticipant(eq("user"), eq("user"), any(EClass.class))).thenReturn(b);
+		assertTrue(meritService.validateBadge("user", 10));
+		verify(assetService, times(1)).getAssetByParticipant(any(), any(), any(EClass.class));
+	}
 }

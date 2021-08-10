@@ -138,6 +138,7 @@ public class MeritServiceImpl implements MeritService {
 		BettingEntry be = MeritFactory.eINSTANCE.createBettingEntry();
 		be.setAssetId(userId);
 		be.setParticipantId(userId);
+		be.setTransactionId(MeritPackage.Literals.BET.getName());
 		be.setStake(amount);
 		be.setBetIdentifier(betId);
 		be.setResult(BetResultType.INITIAL_BET);
@@ -173,6 +174,7 @@ public class MeritServiceImpl implements MeritService {
 		be.setAssetId(userId);
 		be.setParticipantId(userId);
 		be.setBetIdentifier(betId);
+		be.setTransactionId(MeritPackage.Literals.BET.getName());
 		be.setResult(result);
 		switch (result) {
 		case WIN:
@@ -236,6 +238,7 @@ public class MeritServiceImpl implements MeritService {
 		PurchaseEntry pe = MeritFactory.eINSTANCE.createPurchaseEntry();
 		pe.setAmount(amount);
 		pe.setAssetId(userId);
+		pe.setTransactionId(MeritPackage.Literals.PURCHASE.getName());
 		pe.setParticipantId(userId);
 		pe.setPurchaseProvider(provider.getLiteral());
 		pe.setPurchaseTime(new Date());
@@ -254,9 +257,24 @@ public class MeritServiceImpl implements MeritService {
 		AchievementEntry ae = MeritFactory.eINSTANCE.createAchievementEntry();
 		ae.setMeritAmount(amount);
 		ae.setDescription(reason);
+		ae.setTransactionId(MeritPackage.Literals.ACHIEVEMENT.getName());
 		ae.setAssetId(userId);
 		ae.setParticipantId(userId);
 		return ae;
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.gecko.notary.merit.service.api.MeritService#validateBadge(java.lang.String, int)
+	 */
+	@Override
+	public boolean validateBadge(String user, int amount) throws IllegalStateException {
+		if (amount < 0) {
+			throw new IllegalStateException("Negative merits are not supported.");
+		}
+		// Just checking for a valid badge, otherwise we exit here
+		Badge badge = getBadge(user);
+		return amount <= badge.getMeritPoints();
 	}
 
 }

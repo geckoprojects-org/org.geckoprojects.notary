@@ -76,5 +76,14 @@ public interface MeritService {
 	 * @return the {@link Badge} with the new calculated merit point account
 	 */
 	Badge setBetResult(String userId, String betId, int amount, BetResultType result);
+	
+	/**
+	 * Returns <code>true</code>, if the badge have an account for the given amount, otherwise <code>false</code>
+	 * @param user the users which badge needs to be checked
+	 * @param amount the merit amount to check
+	 * @return <code>true</code>, if all badges have an account for the given amount, otherwise <code>false</code>
+	 * @throws IllegalStateException
+	 */
+	boolean validateBadge(String user, int amount) throws IllegalStateException;
 
 }

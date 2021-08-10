@@ -24,16 +24,14 @@ import org.gecko.notary.service.api.textprovider.TextProvider;
 import org.osgi.service.component.annotations.Component;
 
 /**
- * 
- * @author mark
+ * Text provider to create texts for Merit-specific Assets like the Badge
+ * @author Mark Hoffmann
  * @since 23.07.2021
  */
 @Component(property = {"object=Asset", "target=Asset", "domain=Merit", "service.rank=100"})
 public class MeritTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(MeritTextProvider.class.getName());
-//	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-//	private static final String PURCHASE_LABEL = "An amount of %s merits has been purchased from provider %s with transaction id: '%s' at timestamp %s";
 	public static final String BADGE_LABEL_TEMPLATE = "Badge of: %s";
 	public static final String BADGE_DESCRIPTION_TEMPLATE = "Owner: %s with current merit point amount: %s";
 	

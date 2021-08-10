@@ -1,0 +1,14 @@
+{
+  ":configurator:resource-version": 1,
+  
+	"EMFMongoRepositoryConfigurator~notary": 
+  	{
+	    "mongo.instances": "notary",
+	    "notary.user" : "notary",
+		"notary.password" : "notary",
+		"notary.authSource" : "notary",
+		"notary.baseUris" : "mongodb://localhost:27017/",
+		"notary.databases" : "notary", 
+		"notary.notary.repoType" : "PROTOTYPE" 
+	}
+}
