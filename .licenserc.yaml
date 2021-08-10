@@ -25,6 +25,7 @@ header:
     - '**/*.md'
     - '**/*.MD'
     - '**/.classpath'
+    - '**/config.json'
     - 'LICENSE'
     - 'Jenkinsfile'
     - 'NOTICE'
