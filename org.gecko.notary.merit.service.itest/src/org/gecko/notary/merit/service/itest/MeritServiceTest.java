@@ -709,6 +709,7 @@ public class MeritServiceTest {
 		verify(transactionEntryService, times(1)).createTransactionEntry(eq("user"), eq(MeritPackage.Literals.BADGE), any());
 		verify(assetService, never()).updateAsset(any());
 	}
+	
 	/*
 	 * ----------------------------------
 	 * TEST MeritService#validateBadge 
@@ -759,4 +760,6 @@ public class MeritServiceTest {
 		assertTrue(meritService.validateBadge("user", 10));
 		verify(assetService, times(1)).getAssetByParticipant(any(), any(), any(EClass.class));
 	}
+	
+	
 }

@@ -49,10 +49,10 @@ public class MeritTransactionEntryTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(MeritTransactionEntryTextProvider.class.getName());
 	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
-	private static final String PURCHASE_LABEL = "[%s] An amount of %s merits has been purchased from provider %s with transaction id: '%s'";
-	private static final String PLACE_BET_LABEL = "[%s] A bet was placed with a stake of %s merits for bet '%s'";
-	private static final String BET_RESULT_LABEL = "[%s] The bet '%s' was finisned with a result %s and a stake of %s merits";
-	private static final String ACHIEVEMTENT_RESULT_LABEL = "[%s] An achievement '%s' of %s merits was eared";
+	public static final String PURCHASE_LABEL = "[%s] An amount of %s merits has been purchased from provider %s with transaction id: '%s'";
+	public static final String PLACE_BET_LABEL = "[%s] A bet was placed with a stake of %s merits for bet '%s'";
+	public static final String BET_RESULT_LABEL = "[%s] The bet '%s' was finished with a result %s and a stake of %s merits";
+	public static final String ACHIEVEMTENT_RESULT_LABEL = "[%s] An achievement '%s' of %s merits was eared";
 	public static final String BADGE_LABEL_TEMPLATE = "Badge of: %s";
 	public static final String BADGE_DESCRIPTION_TEMPLATE = "Owner: %s with current merit point amount: %s";
 	
@@ -78,7 +78,7 @@ public class MeritTransactionEntryTextProvider implements TextProvider {
 		if (t == null) {
 			if (te instanceof AssetTransactionEntry) {
 				t = NotaryFactory.eINSTANCE.createTransaction();
-				t.setDescription("Asset Veränderung");
+				t.setDescription(ASSET_DEFAULT_LABEL);
 			} else {
 				logger.log(Level.WARNING, ()->String.format("[%s] No transaction found. Returning without result", transactionId));
 				return null;
