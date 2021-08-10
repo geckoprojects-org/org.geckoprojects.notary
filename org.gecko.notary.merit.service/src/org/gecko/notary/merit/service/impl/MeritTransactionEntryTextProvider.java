@@ -48,7 +48,7 @@ import org.osgi.service.component.annotations.Reference;
 public class MeritTransactionEntryTextProvider implements TextProvider {
 
 	private static final Logger logger = Logger.getLogger(MeritTransactionEntryTextProvider.class.getName());
-	private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
 	public static final String PURCHASE_LABEL = "[%s] An amount of %s merits has been purchased from provider %s with transaction id: '%s'";
 	public static final String PLACE_BET_LABEL = "[%s] A bet was placed with a stake of %s merits for bet '%s'";
 	public static final String BET_RESULT_LABEL = "[%s] The bet '%s' was finished with a result %s and a stake of %s merits";
@@ -200,7 +200,7 @@ public class MeritTransactionEntryTextProvider implements TextProvider {
 			return "<n/a>";
 		}
 		if (object instanceof Date) {
-			return SDF.format(object);
+			return sdf.format(object);
 		} else if (object instanceof EObject) {
 			return ((EObject)object).eClass().getName();
 		} else {
